@@ -22,6 +22,11 @@ export const routes: Routes = [
       .then(m => m.DailyInboxDigestComponent)
   },
   {
+    path: 'auto-respond',
+    loadComponent: () => import('./features/auto-respond/auto-respond.component')
+      .then(m => m.AutoRespondComponent)
+  },
+  {
     path: 'agentic-teams',
     loadComponent: () => import('./features/agentic-teams/agentic-teams.component')
       .then(m => m.AgenticTeamsComponent)

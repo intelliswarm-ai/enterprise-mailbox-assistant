@@ -309,6 +309,16 @@ export class EmailDetailModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  goToAutoRespond(): void {
+    if (this.email) {
+      // Navigate to Auto-Respond view with the email ID
+      this.router.navigate(['/auto-respond'], {
+        queryParams: { emailId: this.email.id }
+      });
+      this.close();
+    }
+  }
+
   assignTeam(team: string): void {
     if (!this.email) return;
 

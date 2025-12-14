@@ -238,6 +238,46 @@ def detect_ui_badges(email: Email) -> List[str]:
 
     return ui_badges
 
+
+def get_quick_tone_recommendation(badges: list) -> dict:
+    """Fast rule-based tone recommendation without LLM call"""
+    badges_set = set(badges) if badges else set()
+
+    # VIP or FINANCE emails should be formal
+    if 'VIP' in badges_set or 'FINANCE' in badges_set:
+        return {
+            "recommended_tone": "formal",
+            "tone_reasoning": "VIP or financial email - professional tone recommended"
+        }
+
+    # Newsletters typically need brief responses
+    if 'NEWSLETTER' in badges_set:
+        return {
+            "recommended_tone": "brief",
+            "tone_reasoning": "Newsletter/marketing email - brief response recommended"
+        }
+
+    # Automated emails often need brief responses
+    if 'AUTOMATED' in badges_set:
+        return {
+            "recommended_tone": "brief",
+            "tone_reasoning": "Automated system email - brief acknowledgment recommended"
+        }
+
+    # External emails might need more formal tone
+    if 'EXTERNAL' in badges_set:
+        return {
+            "recommended_tone": "formal",
+            "tone_reasoning": "External email - professional tone recommended"
+        }
+
+    # Default to friendly
+    return {
+        "recommended_tone": "friendly",
+        "tone_reasoning": "Default recommendation - friendly tone works for most situations"
+    }
+
+
 @app.get("/")
 async def root():
     """Health check endpoint"""
@@ -650,6 +690,12 @@ async def process_email(
         email.call_to_actions = llm_result["call_to_actions"]
         email.badges = badges
         email.quick_reply_drafts = quick_reply_drafts
+
+        # Compute and store recommended tone
+        tone_rec = get_quick_tone_recommendation(badges)
+        email.recommended_tone = tone_rec.get("recommended_tone", "friendly")
+        email.tone_reasoning = tone_rec.get("tone_reasoning", "")
+
         email.llm_processed = True
         email.llm_processed_at = datetime.utcnow()
 
@@ -660,7 +706,8 @@ async def process_email(
             "summary": email.summary,
             "badges": badges,
             "quick_reply_drafts": quick_reply_drafts,
-            "ui_badges": email.ui_badges
+            "ui_badges": email.ui_badges,
+            "recommended_tone": email.recommended_tone
         }
 
     except Exception as llm_error:
@@ -754,6 +801,12 @@ async def process_all_unprocessed_emails(
                     email.call_to_actions = llm_result["call_to_actions"]
                     email.badges = badges
                     email.quick_reply_drafts = quick_reply_drafts
+
+                    # Compute and store recommended tone
+                    tone_rec = get_quick_tone_recommendation(badges)
+                    email.recommended_tone = tone_rec.get("recommended_tone", "friendly")
+                    email.tone_reasoning = tone_rec.get("tone_reasoning", "")
+
                     email.llm_processed = True
                     email.llm_processed_at = datetime.utcnow()
 
@@ -1183,6 +1236,12 @@ async def process_email_with_llm(
         email.call_to_actions = result["call_to_actions"]
         email.badges = badges
         email.quick_reply_drafts = quick_reply_drafts
+
+        # Compute and store recommended tone
+        tone_rec = get_quick_tone_recommendation(badges)
+        email.recommended_tone = tone_rec.get("recommended_tone", "friendly")
+        email.tone_reasoning = tone_rec.get("tone_reasoning", "")
+
         email.llm_processed = True
         email.llm_processed_at = datetime.utcnow()
 
@@ -1335,6 +1394,12 @@ async def process_all_emails_with_llm(
                 email.call_to_actions = result["call_to_actions"]
                 email.badges = badges
                 email.quick_reply_drafts = quick_reply_drafts
+
+                # Compute and store recommended tone
+                tone_rec = get_quick_tone_recommendation(badges)
+                email.recommended_tone = tone_rec.get("recommended_tone", "friendly")
+                email.tone_reasoning = tone_rec.get("tone_reasoning", "")
+
                 email.llm_processed = True
                 email.llm_processed_at = datetime.utcnow()
 
@@ -1517,6 +1582,234 @@ async def get_inbox_digest(
     except Exception as e:
         logger.error(f"Error generating inbox digest: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================================================
+# AUTO-RESPOND ENDPOINTS
+# ============================================================================
+
+class SendReplyRequest(BaseModel):
+    reply_text: str
+    tone: str  # 'formal', 'friendly', or 'brief'
+
+
+@app.get("/api/auto-respond/emails")
+async def get_auto_respond_emails(
+    limit: int = 50,
+    db: Session = Depends(get_db)
+):
+    """Get all non-phishing emails with their quick reply drafts for auto-respond view"""
+    try:
+        # Get non-phishing emails that have been processed and not yet replied to
+        from sqlalchemy import or_
+        emails = db.query(Email).filter(
+            Email.is_phishing == False,
+            Email.processed == True,
+            or_(Email.auto_replied == False, Email.auto_replied == None)
+        ).order_by(Email.received_at.desc()).limit(limit).all()
+
+        result = []
+        for email in emails:
+            badges = email.badges or []
+            body_text = email.body_text or ""
+
+            # Use pre-computed tone from database, or compute on-the-fly if not available
+            if email.recommended_tone:
+                recommended_tone = email.recommended_tone
+                tone_reasoning = email.tone_reasoning or ""
+            else:
+                tone_rec = get_quick_tone_recommendation(badges)
+                recommended_tone = tone_rec.get("recommended_tone", "friendly")
+                tone_reasoning = tone_rec.get("tone_reasoning", "")
+
+            email_data = {
+                "id": email.id,
+                "subject": email.subject,
+                "sender": email.sender,
+                "recipient": email.recipient,
+                "body_text": body_text,
+                "body_html": email.body_html,
+                "received_at": email.received_at.isoformat(),
+                "badges": badges,
+                "summary": email.summary,
+                "call_to_actions": email.call_to_actions or [],
+                "quick_reply_drafts": email.quick_reply_drafts or {},
+                "recommended_tone": recommended_tone,
+                "tone_reasoning": tone_reasoning,
+                "workflow_results": [
+                    {
+                        "workflow_name": wr.workflow_name,
+                        "is_phishing_detected": wr.is_phishing_detected,
+                        "confidence_score": wr.confidence_score
+                    }
+                    for wr in email.workflow_results
+                ],
+                "suggested_team": email.suggested_team,
+                "assigned_team": email.assigned_team
+            }
+            result.append(email_data)
+
+        return {
+            "total": len(result),
+            "emails": result
+        }
+
+    except Exception as e:
+        logger.error(f"Error getting auto-respond emails: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/emails/{email_id}/send-reply")
+async def send_email_reply(
+    email_id: int,
+    request: SendReplyRequest,
+    db: Session = Depends(get_db)
+):
+    """Send a reply to an email via SMTP (MailPit)"""
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+
+    try:
+        # Get the original email
+        email = db.query(Email).filter(Email.id == email_id).first()
+        if not email:
+            raise HTTPException(status_code=404, detail="Email not found")
+
+        # Don't allow replying to phishing emails
+        if email.is_phishing:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot reply to emails flagged as phishing"
+            )
+
+        # Validate tone
+        if request.tone not in ['formal', 'friendly', 'brief']:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid tone. Must be 'formal', 'friendly', or 'brief'"
+            )
+
+        # Build the reply email
+        msg = MIMEMultipart()
+        msg['From'] = email.recipient  # Reply from original recipient
+        msg['To'] = email.sender  # Reply to original sender
+        msg['Subject'] = f"Re: {email.subject}"
+
+        # Add reply text
+        msg.attach(MIMEText(request.reply_text, 'plain'))
+
+        # Get MailPit SMTP settings
+        smtp_host = os.getenv("MAILPIT_HOST", "mailpit")
+        smtp_port = int(os.getenv("MAILPIT_SMTP_PORT", "1025"))
+
+        # Send the email via MailPit
+        try:
+            with smtplib.SMTP(smtp_host, smtp_port) as server:
+                server.send_message(msg)
+                logger.info(f"Reply sent successfully for email {email_id} to {email.sender}")
+        except ConnectionRefusedError:
+            logger.error(f"Could not connect to SMTP server at {smtp_host}:{smtp_port}")
+            raise HTTPException(
+                status_code=503,
+                detail="Email server unavailable. Please try again later."
+            )
+        except Exception as smtp_error:
+            logger.error(f"SMTP error: {smtp_error}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to send email: {str(smtp_error)}"
+            )
+
+        # Mark email as auto-replied so it won't show up in auto-respond list again
+        email.auto_replied = True
+        email.auto_replied_at = datetime.utcnow()
+        db.commit()
+        logger.info(f"Email {email_id} marked as auto-replied")
+
+        return {
+            "success": True,
+            "message": f"Reply sent successfully to {email.sender}",
+            "email_id": email_id,
+            "tone_used": request.tone,
+            "recipient": email.sender,
+            "subject": f"Re: {email.subject}"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error sending reply for email {email_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/emails/{email_id}/generate-reply")
+async def generate_reply_for_email(
+    email_id: int,
+    db: Session = Depends(get_db)
+):
+    """Generate quick reply drafts for a specific email (if not already generated)"""
+    try:
+        email = db.query(Email).filter(Email.id == email_id).first()
+        if not email:
+            raise HTTPException(status_code=404, detail="Email not found")
+
+        if email.is_phishing:
+            raise HTTPException(
+                status_code=400,
+                detail="Cannot generate replies for phishing emails"
+            )
+
+        # Check if drafts already exist
+        if email.quick_reply_drafts:
+            # Use pre-computed tone from database, or compute if not available
+            if email.recommended_tone:
+                recommended_tone = email.recommended_tone
+                tone_reasoning = email.tone_reasoning or ""
+            else:
+                badges = email.badges or []
+                tone_rec = get_quick_tone_recommendation(badges)
+                recommended_tone = tone_rec.get("recommended_tone", "friendly")
+                tone_reasoning = tone_rec.get("tone_reasoning", "")
+
+            return {
+                "email_id": email_id,
+                "quick_reply_drafts": email.quick_reply_drafts,
+                "recommended_tone": recommended_tone,
+                "tone_reasoning": tone_reasoning,
+                "cached": True
+            }
+
+        # Generate new drafts
+        drafts = await ollama_service.generate_quick_reply_drafts(
+            email.subject,
+            email.body_text or "",
+            email.sender
+        )
+
+        # Compute tone recommendation
+        badges = email.badges or []
+        tone_rec = get_quick_tone_recommendation(badges)
+
+        # Save to database
+        email.quick_reply_drafts = drafts
+        email.recommended_tone = tone_rec.get("recommended_tone", "friendly")
+        email.tone_reasoning = tone_rec.get("tone_reasoning", "")
+        db.commit()
+
+        return {
+            "email_id": email_id,
+            "quick_reply_drafts": drafts,
+            "recommended_tone": email.recommended_tone,
+            "tone_reasoning": email.tone_reasoning,
+            "cached": False
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error generating reply for email {email_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # ============================================================================
 # AGENTIC TEAMS ENDPOINTS
@@ -3093,6 +3386,150 @@ async def get_tool_readiness(tool_name: str):
     except Exception as e:
         logger.error(f"Error getting tool readiness: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
+# Claude SDK Pilot Endpoints
+# =============================================================================
+
+@app.post("/api/pilot/claude-sdk/analyze")
+async def analyze_with_claude_sdk(request: dict):
+    """
+    Analyze an email/content using Claude Agent SDK
+    Request body: {"content": "email content to analyze"}
+    """
+    try:
+        from claude_sdk_pilot import ClaudeFraudWorkflow
+
+        content = request.get("content", "")
+        if not content:
+            raise HTTPException(status_code=400, detail="content is required")
+
+        # Check for Anthropic API key
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise HTTPException(
+                status_code=503,
+                detail="ANTHROPIC_API_KEY not configured. Please add it to your environment."
+            )
+
+        # Create Claude workflow and analyze
+        claude_workflow = ClaudeFraudWorkflow(api_key=api_key)
+        result = await claude_workflow.analyze_email(content)
+
+        return {
+            "status": "completed",
+            "provider": "claude",
+            "result": result
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in Claude SDK analysis: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/pilot/openai/analyze")
+async def analyze_with_openai(request: dict, db: Session = Depends(get_db)):
+    """
+    Analyze an email/content using OpenAI (existing system)
+    Request body: {"content": "email content to analyze"}
+    """
+    try:
+        from fraud_workflow import fraud_workflow
+
+        content = request.get("content", "")
+        if not content:
+            raise HTTPException(status_code=400, detail="content is required")
+
+        # Create a mock email dict for the workflow
+        email_data = {
+            "subject": "Pilot Test Analysis",
+            "body": content,
+            "sender": "pilot-test@example.com",
+            "recipient": "analysis@bank.com",
+            "timestamp": datetime.now().isoformat()
+        }
+
+        # Run analysis using existing OpenAI workflow
+        result = await fraud_workflow.analyze_email(email_data)
+
+        return {
+            "status": "completed",
+            "provider": "openai",
+            "result": result
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in OpenAI analysis: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/pilot/compare")
+async def run_pilot_comparison(request: dict = None):
+    """
+    Run comparison tests between Claude SDK and OpenAI implementations
+    Request body (optional): {"test_cases": ["phishing", "bec", "legitimate"]}
+    """
+    try:
+        from claude_sdk_pilot import WorkflowComparison
+
+        # Check for Anthropic API key
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise HTTPException(
+                status_code=503,
+                detail="ANTHROPIC_API_KEY not configured. Please add it to your environment."
+            )
+
+        # Get optional test case filter
+        test_filter = None
+        if request:
+            test_filter = request.get("test_cases")
+
+        # Create comparison runner and execute
+        comparison = WorkflowComparison()
+        results = await comparison.run_comparison(test_filter=test_filter)
+
+        return {
+            "status": "completed",
+            "comparison_results": results
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in pilot comparison: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/pilot/status")
+async def get_pilot_status():
+    """
+    Get status of Claude SDK pilot configuration
+    Returns: Configuration status and readiness
+    """
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY")
+    claude_model = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-20250514")
+    openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+
+    return {
+        "claude_sdk": {
+            "configured": bool(anthropic_key),
+            "model": claude_model,
+            "status": "ready" if anthropic_key else "missing ANTHROPIC_API_KEY"
+        },
+        "openai": {
+            "configured": bool(openai_key),
+            "model": openai_model,
+            "status": "ready" if openai_key else "missing OPENAI_API_KEY"
+        },
+        "comparison_ready": bool(anthropic_key and openai_key)
+    }
 
 
 @app.get("/api/events")

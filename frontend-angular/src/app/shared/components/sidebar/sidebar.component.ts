@@ -43,7 +43,8 @@ export class SidebarComponent {
       items: [
         { label: 'Dashboard', route: '/dashboard', icon: 'dashboard' },
         { label: 'Mailbox', route: '/mailbox', icon: 'email' },
-        { label: 'Daily Inbox Digest', route: '/daily-inbox-digest', icon: 'summarize' }
+        { label: 'Daily Inbox Digest', route: '/daily-inbox-digest', icon: 'summarize' },
+        { label: 'Auto-Respond', route: '/auto-respond', icon: 'reply' }
       ]
     },
     {

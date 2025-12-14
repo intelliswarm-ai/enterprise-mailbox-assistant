@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { EmailDetailModalComponent } from '../mailbox/components/email-detail-modal/email-detail-modal.component';
 import { Email } from '../../core/models/email.model';
@@ -50,6 +51,7 @@ interface CallToAction {
 })
 export class DailyInboxDigestComponent implements OnInit {
   private http = inject(HttpClient);
+  private router = inject(Router);
 
   groupedEmails: GroupedEmails = {};
   otherEmails: EmailSummary[] = []; // Store OTHER category emails for CTA lookup

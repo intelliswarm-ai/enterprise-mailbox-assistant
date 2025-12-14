@@ -23,3 +23,6 @@ openai>=1.50.0
 
 # Model Context Protocol (MCP) for fraud detection
 mcp>=1.0.0
+
+# Claude SDK Pilot
+anthropic>=0.40.0

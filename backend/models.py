@@ -36,6 +36,14 @@ class Email(Base):
     # Quick reply drafts (3 versions: formal, friendly, brief)
     quick_reply_drafts = Column(JSON)  # {formal: "", friendly: "", brief: ""}
 
+    # Recommended tone for reply (computed during email analysis)
+    recommended_tone = Column(String)  # 'formal', 'friendly', or 'brief'
+    tone_reasoning = Column(String)  # Brief explanation of why this tone was chosen
+
+    # Auto-respond tracking
+    auto_replied = Column(Boolean, default=False)  # True if reply was sent via auto-respond
+    auto_replied_at = Column(DateTime)  # When the auto-reply was sent
+
     # Wiki enrichment data
     enriched_data = Column(JSON)  # {enriched_keywords: [{keyword, context, wiki_page, confidence}], relevant_pages: []}
     enriched = Column(Boolean, default=False)  # Flag to indicate if email has been enriched

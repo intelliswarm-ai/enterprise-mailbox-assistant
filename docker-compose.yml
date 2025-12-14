@@ -54,6 +54,9 @@ services:
       OLLAMA_MODEL: tinyllama
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      # Claude SDK Pilot Configuration
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-sonnet-4-20250514}
       # Investment Team API Keys
       SERPER_API_KEY: ${SERPER_API_KEY}
       SEC_API_KEY: ${SEC_API_KEY}

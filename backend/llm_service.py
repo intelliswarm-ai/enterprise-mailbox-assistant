@@ -638,5 +638,100 @@ Return ONLY a valid JSON object with this exact format (no other text):
             "brief": f"Thanks for your email about '{subject}'. I'll respond shortly."
         }
 
+    async def recommend_reply_tone(self, subject: str, body: str, sender: str, badges: List[str]) -> Dict[str, str]:
+        """Recommend the best reply tone based on email context
+
+        Returns a dict with:
+        - recommended_tone: 'formal', 'friendly', or 'brief'
+        - reasoning: explanation of why this tone was chosen
+        """
+
+        # Rule-based quick decisions for clear-cut cases
+        badges_set = set(badges)
+
+        # VIP or FINANCE emails should be formal
+        if 'VIP' in badges_set or 'FINANCE' in badges_set:
+            return {
+                "recommended_tone": "formal",
+                "reasoning": "VIP or financial email - professional tone recommended"
+            }
+
+        # Newsletters typically need brief responses
+        if 'NEWSLETTER' in badges_set:
+            return {
+                "recommended_tone": "brief",
+                "reasoning": "Newsletter/marketing email - brief response recommended"
+            }
+
+        # Automated emails often need brief responses
+        if 'AUTOMATED' in badges_set:
+            return {
+                "recommended_tone": "brief",
+                "reasoning": "Automated system email - brief acknowledgment recommended"
+            }
+
+        # For other cases, use LLM to analyze
+        system_prompt = """You are an email communication expert. Analyze the email and recommend the most appropriate reply tone.
+You MUST return ONLY valid JSON with no other text."""
+
+        prompt = f"""Analyze this email and recommend the best tone for replying:
+
+Subject: {subject}
+From: {sender}
+Email Body:
+{body[:800]}
+
+Based on the email's:
+- Formality level (formal language, titles, corporate speak vs casual)
+- Urgency and importance
+- Relationship context (external partner, colleague, customer)
+- Content type (request, information, meeting, etc.)
+
+Recommend ONE tone: "formal", "friendly", or "brief"
+
+Return ONLY a JSON object:
+{{
+  "recommended_tone": "formal" or "friendly" or "brief",
+  "reasoning": "Brief explanation (1 sentence)"
+}}"""
+
+        try:
+            response = await self.generate(prompt, system_prompt)
+            response = response.strip()
+
+            # Remove markdown code blocks
+            if "```json" in response:
+                response = response.split("```json")[1].split("```")[0].strip()
+            elif response.startswith("```"):
+                lines = response.split("\n")
+                response = "\n".join(lines[1:-1]).strip()
+
+            # Find JSON object
+            start = response.find("{")
+            end = response.rfind("}") + 1
+
+            if start >= 0 and end > start:
+                json_str = response[start:end]
+                result = json.loads(json_str)
+
+                # Validate the response
+                if result.get("recommended_tone") in ["formal", "friendly", "brief"]:
+                    return {
+                        "recommended_tone": result["recommended_tone"],
+                        "reasoning": result.get("reasoning", "Based on email analysis")
+                    }
+
+            logger.warning("Could not parse tone recommendation, using friendly as default")
+
+        except Exception as e:
+            logger.error(f"Error recommending reply tone: {e}")
+
+        # Default to friendly for unclear cases
+        return {
+            "recommended_tone": "friendly",
+            "reasoning": "Default recommendation - friendly tone works for most situations"
+        }
+
+
 # Global instance
 ollama_service = OllamaService()

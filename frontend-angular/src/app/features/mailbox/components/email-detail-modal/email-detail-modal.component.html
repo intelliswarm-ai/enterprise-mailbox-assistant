@@ -345,11 +345,15 @@
             <div class="mb-3">
               <h6><i class="material-icons-round" style="font-size: 20px; vertical-align: middle;">task_alt</i> Call-to-Actions:</h6>
               <div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-                <ul class="mb-0">
+                <ul class="mb-2">
                   @for (cta of email.call_to_actions; track cta) {
                     <li class="text-sm">{{ cta }}</li>
                   }
                 </ul>
+                <button class="btn btn-sm btn-primary" (click)="goToAutoRespond()">
+                  <i class="material-icons-round" style="font-size: 16px; vertical-align: middle;">reply</i>
+                  Reply in Auto-Respond
+                </button>
               </div>
             </div>
           }
