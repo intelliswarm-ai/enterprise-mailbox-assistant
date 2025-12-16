@@ -23,7 +23,7 @@ The Enterprise Mailbox assistant platform features three fully implemented speci
 
 ### Core Components
 
-**Orchestrator**: `backend/agentic_teams.py` (1,681 lines)
+**Orchestrator**: `backend/agentic_teams.py`
 - **Class**: `AgenticTeamOrchestrator`
 - **Responsibilities**:
   - Team detection (rule-based + LLM-based)
@@ -148,7 +148,7 @@ Final: Comprehensive report with citations and metrics
 
 ## Fraud Investigation Workflow
 
-### File: `backend/fraud_workflow.py` (1,769 lines)
+### File: `backend/fraud_workflow.py`
 
 ### Agents
 
@@ -264,7 +264,7 @@ _investigate_account_compromise(email_metadata, behavior)
 
 ## Compliance & Regulatory Workflow
 
-### File: `backend/compliance_workflow.py` (1,035 lines)
+### File: `backend/compliance_workflow.py`
 
 ### Agents
 
@@ -381,7 +381,7 @@ _investigate_account_compromise(email_metadata, behavior)
 
 ## Investment Research Workflow
 
-### File: `backend/investment_workflow.py` (610 lines)
+### File: `backend/investment_workflow.py`
 
 ### Agents
 
