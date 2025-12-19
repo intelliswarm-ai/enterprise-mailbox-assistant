@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI Cup 2025 platform features an extensible pluggable tools framework with **13 specialized tools** that enable agentic workflows to interact with external systems, APIs, and data sources. All tools are designed with **automatic fallback mechanisms** and **graceful degradation** to ensure zero hard dependencies.
+The emterprise mailbox platform features an extensible pluggable tools framework with **13 specialized tools** that enable agentic workflows to interact with external systems, APIs, and data sources. All tools are designed with **automatic fallback mechanisms** and **graceful degradation** to ensure zero hard dependencies.
 
 ---
 
