@@ -105,32 +105,32 @@ The system uses a **purpose-built orchestration framework** rather than LangChai
 │                        ORCHESTRATION LAYER                              │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   ┌─────────────────────────────────────────────────────────────────┐  │
-│   │                 AgenticTeamOrchestrator                          │  │
-│   │   - Team Management (3 teams × 4 agents)                        │  │
-│   │   - Pattern Execution Engine                                     │  │
-│   │   - SSE Event Broadcasting                                       │  │
-│   │   - LLM Abstraction (OpenAI + Ollama)                           │  │
-│   └─────────────────────────────────────────────────────────────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                 AgenticTeamOrchestrator                         │   │
+│   │   - Team Management (3 teams × 4 agents)                        │   │
+│   │   - Pattern Execution Engine                                    │   │
+│   │   - SSE Event Broadcasting                                      │   │
+│   │   - LLM Abstraction (OpenAI + Ollama)                           │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
 │                              │                                          │
 │              ┌───────────────┼───────────────┐                          │
 │              ↓               ↓               ↓                          │
-│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                 │
-│   │ FraudWorkflow│  │ Compliance   │  │ Investment   │                 │
-│   │              │  │ Workflow     │  │ Workflow     │                 │
-│   │ Doer-Checker │  │ Multi-Round  │  │ Research     │                 │
-│   │ Pattern      │  │ Debate       │  │ Synthesis    │                 │
-│   └──────────────┘  └──────────────┘  └──────────────┘                 │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+│   │ FraudWorkflow│  │ Compliance   │  │ Investment   │                  │
+│   │              │  │ Workflow     │  │ Workflow     │                  │
+│   │ Doer-Checker │  │ Multi-Round  │  │ Research     │                  │
+│   │ Pattern      │  │ Debate       │  │ Synthesis    │                  │
+│   └──────────────┘  └──────────────┘  └──────────────┘                  │
 │                                                                         │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                          TOOL LAYER                                     │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   Investigation │ Risk Tools │ Transaction │ Regulatory │ AML Tools    │
-│   Tools         │            │ Tools       │ Tools      │              │
-│                 │            │             │            │              │
-│   Sanctions     │ Search     │ SEC Tools   │ Browser    │ Calculator   │
-│   Tools         │ Tools      │             │ Tools      │ Tools        │
+│   Investigation │ Risk Tools │ Transaction │ Regulatory │ AML Tools     │
+│   Tools         │            │ Tools       │ Tools      │               │
+│                 │            │             │            │               │
+│   Sanctions     │ Search     │ SEC Tools   │ Browser    │ Calculator    │
+│   Tools         │ Tools      │             │ Tools      │ Tools         │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -225,32 +225,32 @@ The Doer-Checker pattern implements iterative validation where findings are chal
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   ITERATION 1                                                           │
-│   ┌──────────────┐                    ┌──────────────┐                 │
-│   │    DOER      │  Initial Finding   │   CHECKER    │                 │
-│   │   (Fraud     │ ─────────────────→ │  (Forensic   │                 │
-│   │  Specialist) │                    │   Analyst)   │                 │
-│   │              │ ←───────────────── │              │                 │
-│   └──────────────┘  Validation/Gaps   └──────────────┘                 │
+│   ┌──────────────┐                    ┌──────────────┐                  │
+│   │    DOER      │  Initial Finding   │   CHECKER    │                  │
+│   │   (Fraud     │ ─────────────────→ │  (Forensic   │                  │
+│   │  Specialist) │                    │   Analyst)   │                  │
+│   │              │ ←───────────────── │              │                  │
+│   └──────────────┘  Validation/Gaps   └──────────────┘                  │
 │                                                                         │
 │   ITERATION 2 (if needed)                                               │
-│   ┌──────────────┐                    ┌──────────────┐                 │
-│   │    DOER      │  Refined Analysis  │   CHECKER    │                 │
-│   │              │ ─────────────────→ │              │                 │
-│   │              │ ←───────────────── │              │                 │
-│   └──────────────┘  Re-validation     └──────────────┘                 │
+│   ┌──────────────┐                    ┌──────────────┐                  │
+│   │    DOER      │  Refined Analysis  │   CHECKER    │                  │
+│   │              │ ─────────────────→ │              │                  │
+│   │              │ ←───────────────── │              │                  │
+│   └──────────────┘  Re-validation     └──────────────┘                  │
 │                                                                         │
 │   ITERATION 3 (if needed)                                               │
-│   ┌──────────────┐                    ┌──────────────┐                 │
-│   │    DOER      │  Final Analysis    │   CHECKER    │                 │
-│   │              │ ─────────────────→ │              │                 │
-│   │              │ ←───────────────── │              │                 │
-│   └──────────────┘  Final Approval    └──────────────┘                 │
+│   ┌──────────────┐                    ┌──────────────┐                  │
+│   │    DOER      │  Final Analysis    │   CHECKER    │                  │
+│   │              │ ─────────────────→ │              │                  │
+│   │              │ ←───────────────── │              │                  │
+│   └──────────────┘  Final Approval    └──────────────┘                  │
 │                                                                         │
 │   DECISION                                                              │
-│   ┌────────────────────────────────────────────────────────────────┐   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
 │   │              SECURITY DIRECTOR (Decision Maker)                 │   │
 │   │              Synthesizes validated results + action items       │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -321,45 +321,45 @@ The Multi-Round Debate pattern enables structured consensus building through pro
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   ROUND 1: Initial Assessment                                           │
-│   ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐          │
-│   │ Compliance │ │   Legal    │ │  Internal  │ │ Regulatory │          │
-│   │  Officer   │ │  Counsel   │ │  Auditor   │ │  Liaison   │          │
-│   └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘          │
+│   ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐           │
+│   │ Compliance │ │   Legal    │ │  Internal  │ │ Regulatory │           │
+│   │  Officer   │ │  Counsel   │ │  Auditor   │ │  Liaison   │           │
+│   └─────┬──────┘ └─────┬──────┘ └─────┬──────┘ └─────┬──────┘           │
 │         │              │              │              │                  │
 │         ↓              ↓              ↓              ↓                  │
-│   "According to   "Legal inter-  "Audit trail   "Regulator           │
-│    regulation..."  pretation..."  shows..."      expects..."          │
+│   "According to   "Legal inter-  "Audit trail   "Regulator              │
+│    regulation..."  pretation..."  shows..."      expects..."            │
 │                                                                         │
-│   ─────────────────────────────────────────────────────────────────    │
+│   ─────────────────────────────────────────────────────────────────     │
 │                                                                         │
 │   ROUND 2: Challenge & Debate                                           │
-│   ┌────────────────────────────────────────────────────────────────┐   │
-│   │  Agents critique each other's positions                         │   │
-│   │  • Question assumptions                                         │   │
-│   │  • Identify gaps in analysis                                    │   │
-│   │  • Provide counter-arguments                                    │   │
-│   │  • Challenge weak reasoning                                     │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   ┌────────────────────────────────────────────────────────────────┐    │
+│   │  Agents critique each other's positions                        │    │
+│   │  • Question assumptions                                        │    │
+│   │  • Identify gaps in analysis                                   │    │
+│   │  • Provide counter-arguments                                   │    │
+│   │  • Challenge weak reasoning                                    │    │
+│   └────────────────────────────────────────────────────────────────┘    │
 │                                                                         │
-│   ─────────────────────────────────────────────────────────────────    │
+│   ─────────────────────────────────────────────────────────────────     │
 │                                                                         │
 │   ROUND 3: Synthesis & Consensus                                        │
-│   ┌────────────────────────────────────────────────────────────────┐   │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
 │   │  Agents defend or concede positions                             │   │
 │   │  • Acknowledge valid counter-points                             │   │
 │   │  • Integrate best ideas from debate                             │   │
 │   │  • Build unified recommendation                                 │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   └─────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
-│   ─────────────────────────────────────────────────────────────────    │
+│   ─────────────────────────────────────────────────────────────────     │
 │                                                                         │
 │   FINAL DECISION: Regulatory Liaison                                    │
-│   ┌────────────────────────────────────────────────────────────────┐   │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
 │   │  Synthesizes comprehensive compliance determination             │   │
 │   │  • Action items with owners                                     │   │
 │   │  • Risk assessment                                              │   │
 │   │  • Regulatory reporting requirements                            │   │
-│   └────────────────────────────────────────────────────────────────┘   │
+│   └─────────────────────────────────────────────────────────────────┘   │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -436,37 +436,37 @@ The Research Synthesis pattern enables parallel data gathering from multiple sou
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   PHASE 1: Parallel Data Gathering                                      │
-│   ┌─────────────────────────────────────────────────────────────────┐  │
-│   │                    asyncio.gather()                              │  │
-│   │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌───────────┐ │  │
-│   │  │ Financial  │  │  Research  │  │  Filings   │  │Calculator │ │  │
-│   │  │  Analyst   │  │  Analyst   │  │  Analyst   │  │   Tools   │ │  │
-│   │  │            │  │            │  │            │  │           │ │  │
-│   │  │ P/E Ratio  │  │ Google     │  │ SEC EDGAR  │  │ Metrics   │ │  │
-│   │  │ EPS Growth │  │ News       │  │ 10-K, 10-Q │  │ Ratios    │ │  │
-│   │  │ Debt/Equity│  │ Sentiment  │  │ MD&A       │  │           │ │  │
-│   │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘  └─────┬─────┘ │  │
-│   │        │               │               │               │        │  │
-│   └────────┴───────────────┴───────────────┴───────────────┴────────┘  │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                    asyncio.gather()                             │   │
+│   │  ┌────────────┐  ┌────────────┐  ┌────────────┐  ┌───────────┐  │   │
+│   │  │ Financial  │  │  Research  │  │  Filings   │  │Calculator │  │   │
+│   │  │  Analyst   │  │  Analyst   │  │  Analyst   │  │   Tools   │  │   │
+│   │  │            │  │            │  │            │  │           │  │   │
+│   │  │ P/E Ratio  │  │ Google     │  │ SEC EDGAR  │  │ Metrics   │  │   │
+│   │  │ EPS Growth │  │ News       │  │ 10-K, 10-Q │  │ Ratios    │  │   │
+│   │  │ Debt/Equity│  │ Sentiment  │  │ MD&A       │  │           │  │   │
+│   │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘  └─────┬─────┘  │   │
+│   │        │               │               │               │        │   │
+│   └────────┴───────────────┴───────────────┴───────────────┴────────┘   │
 │                                    │                                    │
 │                                    ↓                                    │
 │   PHASE 2: Cross-Validation                                             │
-│   ┌─────────────────────────────────────────────────────────────────┐  │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
 │   │  • Compare data points across sources                            │  │
 │   │  • Identify discrepancies in reported figures                    │  │
 │   │  • Validate facts from multiple sources                          │  │
 │   │  • Flag conflicting information                                  │  │
-│   └─────────────────────────────────────────────────────────────────┘  │
+│   └──────────────────────────────────────────────────────────────────┘  │
 │                                    │                                    │
 │                                    ↓                                    │
 │   PHASE 3: Expert Synthesis                                             │
-│   ┌─────────────────────────────────────────────────────────────────┐  │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
 │   │                    Investment Advisor                            │  │
 │   │  • Synthesize all research findings                              │  │
 │   │  • Weight sources by reliability                                 │  │
 │   │  • Generate investment recommendation                            │  │
 │   │  • Include citations and confidence levels                       │  │
-│   └─────────────────────────────────────────────────────────────────┘  │
+│   └──────────────────────────────────────────────────────────────────┘  │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -541,30 +541,30 @@ async def _notify_tool_usage(self, callback, agent, agent_icon,
 │                                 │                                       │
 │              ┌──────────────────┼──────────────────┐                    │
 │              ↓                  ↓                  ↓                    │
-│   ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐       │
-│   │   Naive Bayes    │ │  Random Forest   │ │ Fine-tuned LLM   │       │
-│   │                  │ │                  │ │   (DistilBERT)   │       │
-│   │  Acc: 76.50%     │ │  Acc: 71.70%     │ │  Acc: 59.00%     │       │
-│   │  F1:  74.81%     │ │  F1:  78.45%     │ │  F1:  45.77%     │       │
-│   │  Prec: 99.71%    │ │  Prec: 70.55%    │ │  Prec: 100.00%   │       │
-│   │  Rec: 59.86%     │ │  Rec: 88.34%     │ │  Rec: 29.67%     │       │
-│   │                  │ │                  │ │                  │       │
-│   │  Port: 8002      │ │  Port: 8004      │ │  Port: 8006      │       │
-│   └────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘       │
+│   ┌──────────────────┐ ┌──────────────────┐ ┌──────────────────┐        │
+│   │   Naive Bayes    │ │  Random Forest   │ │ Fine-tuned LLM   │        │
+│   │                  │ │                  │ │   (DistilBERT)   │        │
+│   │  Acc: 76.50%     │ │  Acc: 71.70%     │ │  Acc: 59.00%     │        │
+│   │  F1:  74.81%     │ │  F1:  78.45%     │ │  F1:  45.77%     │        │
+│   │  Prec: 99.71%    │ │  Prec: 70.55%    │ │  Prec: 100.00%   │        │
+│   │  Rec: 59.86%     │ │  Rec: 88.34%     │ │  Rec: 29.67%     │        │
+│   │                  │ │                  │ │                  │        │
+│   │  Port: 8002      │ │  Port: 8004      │ │  Port: 8006      │        │
+│   └────────┬─────────┘ └────────┬─────────┘ └────────┬─────────┘        │
 │            │                    │                    │                  │
 │            └────────────────────┼────────────────────┘                  │
 │                                 ↓                                       │
-│   ┌─────────────────────────────────────────────────────────────────┐  │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
 │   │                    ENSEMBLE VOTING LAYER                         │  │
 │   │                                                                  │  │
-│   │  Strategy 1: Majority Voting (2/3 agree)                        │  │
-│   │  Strategy 2: Unanimous Voting (3/3 agree)                       │  │
-│   │  Strategy 3: Any Detection (1/3 detects)                        │  │
-│   │  Strategy 4: Weighted Voting (F1-based weights)                 │  │
-│   │  Strategy 5: High Precision (NB + LLM)                          │  │
-│   │  Strategy 6: High Recall (RF primary)                           │  │
+│   │  Strategy 1: Majority Voting (2/3 agree)                         │  │
+│   │  Strategy 2: Unanimous Voting (3/3 agree)                        │  │
+│   │  Strategy 3: Any Detection (1/3 detects)                         │  │
+│   │  Strategy 4: Weighted Voting (F1-based weights)                  │  │
+│   │  Strategy 5: High Precision (NB + LLM)                           │  │
+│   │  Strategy 6: High Recall (RF primary)                            │  │
 │   │                                                                  │  │
-│   └─────────────────────────────────────────────────────────────────┘  │
+│   └──────────────────────────────────────────────────────────────────┘  │
 │                                 │                                       │
 │                                 ↓                                       │
 │                    ┌─────────────────────┐                              │
@@ -799,15 +799,15 @@ Real-time event broadcasting to all connected clients via Server-Sent Events.
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
 │   Publishers (Agents)              Broker              Subscribers      │
-│   ┌─────────────┐     ┌─────────────────────┐     ┌─────────────┐      │
-│   │   Agent 1   │────→│                     │────→│  Browser 1  │      │
-│   └─────────────┘     │   EventBroadcaster  │     └─────────────┘      │
-│   ┌─────────────┐     │                     │     ┌─────────────┐      │
-│   │   Agent 2   │────→│   client_queues[]   │────→│  Browser 2  │      │
-│   └─────────────┘     │                     │     └─────────────┘      │
-│   ┌─────────────┐     │   Heartbeat: 30s    │     ┌─────────────┐      │
-│   │   Agent 3   │────→│                     │────→│  Browser N  │      │
-│   └─────────────┘     └─────────────────────┘     └─────────────┘      │
+│   ┌─────────────┐     ┌─────────────────────┐     ┌─────────────┐       │
+│   │   Agent 1   │────→│                     │────→│  Browser 1  │       │
+│   └─────────────┘     │   EventBroadcaster  │     └─────────────┘       │
+│   ┌─────────────┐     │                     │     ┌─────────────┐       │
+│   │   Agent 2   │────→│   client_queues[]   │────→│  Browser 2  │       │
+│   └─────────────┘     │                     │     └─────────────┘       │
+│   ┌─────────────┐     │   Heartbeat: 30s    │     ┌─────────────┐       │
+│   │   Agent 3   │────→│                     │────→│  Browser N  │       │
+│   └─────────────┘     └─────────────────────┘     └─────────────┘       │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -872,25 +872,25 @@ Agents write findings to a shared memory structure that other agents can read, e
 │                      BLACKBOARD PATTERN                                 │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                         │
-│   ┌─────────────┐                           ┌─────────────┐            │
-│   │   Agent 1   │──write──┐   ┌───read─────│   Agent 3   │            │
-│   │  (Doer)     │         │   │            │  (Legal)    │            │
-│   └─────────────┘         ↓   ↓            └─────────────┘            │
-│                     ┌──────────────────┐                               │
-│                     │   agent_thread   │                               │
-│                     │                  │                               │
-│                     │  [{agent: "A",   │                               │
-│                     │    finding: "x", │                               │
-│                     │    timestamp: t},│                               │
-│                     │   {agent: "B",   │                               │
-│                     │    finding: "y", │                               │
-│                     │    timestamp: t}]│                               │
-│                     │                  │                               │
-│                     └──────────────────┘                               │
-│   ┌─────────────┐         ↑   ↑            ┌─────────────┐            │
-│   │   Agent 2   │──write──┘   └───read─────│   Agent 4   │            │
-│   │  (Checker)  │                          │  (Director) │            │
-│   └─────────────┘                           └─────────────┘            │
+│   ┌─────────────┐                           ┌─────────────┐             │
+│   │   Agent 1   │──write──┐   ┌───read─────│   Agent 3   │              │
+│   │  (Doer)     │         │   │            │  (Legal)    │              │
+│   └─────────────┘         ↓   ↓            └─────────────┘              │
+│                     ┌──────────────────┐                                │
+│                     │   agent_thread   │                                │
+│                     │                  │                                │
+│                     │  [{agent: "A",   │                                │
+│                     │    finding: "x", │                                │
+│                     │    timestamp: t},│                                │
+│                     │   {agent: "B",   │                                │
+│                     │    finding: "y", │                                │
+│                     │    timestamp: t}]│                                │
+│                     │                  │                                │
+│                     └──────────────────┘                                │
+│   ┌─────────────┐         ↑   ↑            ┌─────────────┐              │
+│   │   Agent 2   │──write──┘   └───read─────│   Agent 4   │              │
+│   │  (Checker)  │                          │  (Director) │              │
+│   └─────────────┘                           └─────────────┘             │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
@@ -961,17 +961,17 @@ Progress callbacks flow through the workflow stages, enabling real-time status u
 │   └──────┬──────┘                                                       │
 │          │                                                              │
 │          ↓                                                              │
-│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐              │
-│   │  Stage 1    │────→│  Stage 2    │────→│  Stage 3    │              │
-│   │             │     │             │     │             │              │
-│   │ callback()  │     │ callback()  │     │ callback()  │              │
-│   └──────┬──────┘     └──────┬──────┘     └──────┬──────┘              │
+│   ┌─────────────┐     ┌─────────────┐     ┌─────────────┐               │
+│   │  Stage 1    │────→│  Stage 2    │────→│  Stage 3    │               │
+│   │             │     │             │     │             │               │
+│   │ callback()  │     │ callback()  │     │ callback()  │               │
+│   └──────┬──────┘     └──────┬──────┘     └──────┬──────┘               │
 │          │                   │                   │                      │
 │          ↓                   ↓                   ↓                      │
-│   ┌────────────────────────────────────────────────────┐               │
-│   │              SSE Broadcaster                        │               │
-│   │         (broadcasts to all clients)                │               │
-│   └────────────────────────────────────────────────────┘               │
+│   ┌────────────────────────────────────────────────────┐                │
+│   │              SSE Broadcaster                       │                │
+│   │         (broadcasts to all clients)                │                │
+│   └────────────────────────────────────────────────────┘                │
 │                                                                         │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
