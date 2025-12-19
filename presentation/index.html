@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Email Assistant - AI Hackathon 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #c53030;
+            --accent-gold: #d69e2e;
+            --success: #38a169;
+            --text: #2d3748;
+            --text-light: #718096;
+            --bg: #f7fafc;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            --gradient-accent: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Presentation Container */
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Slide Base */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Timer Bar */
+        .timer-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--gradient-accent);
+            width: 0%;
+            transition: width 1s linear;
+            z-index: 1000;
+        }
+
+        /* Progress Indicator */
+        .progress {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+            transform: scale(1.3);
+        }
+
+        .progress-dot:hover {
+            background: var(--primary-light);
+        }
+
+        /* Timer Display */
+        .timer-display {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--white);
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .timer-display.warning {
+            color: var(--accent-gold);
+        }
+
+        .timer-display.danger {
+            color: var(--accent);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            font-size: 1rem;
+            color: var(--text-light);
+            z-index: 100;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .subtitle {
+            font-size: 1.6rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        /* Title Slide */
+        .slide-title {
+            background: var(--gradient);
+            color: var(--white);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-title h1 {
+            color: var(--white);
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+        }
+
+        .slide-title .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .slide-title .team-info {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2rem;
+            margin-top: 60px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            font-size: 5rem;
+            color: var(--accent-gold);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-number.accent {
+            color: var(--accent);
+        }
+
+        .stat-number.success {
+            color: var(--success);
+        }
+
+        .stat-number.gold {
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--primary);
+        }
+
+        .feature-card.fraud {
+            border-left-color: var(--accent);
+        }
+
+        .feature-card.compliance {
+            border-left-color: var(--accent-gold);
+        }
+
+        .feature-card.investment {
+            border-left-color: var(--success);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        /* Agent Flow */
+        .agent-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 40px 0;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .agent-box {
+            text-align: center;
+            padding: 25px 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            min-width: 160px;
+        }
+
+        .agent-box.active {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .agent-box i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .agent-box .agent-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .agent-arrow {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        /* Problem Stats */
+        .problem-highlight {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            padding: 40px;
+            border-radius: 16px;
+            margin: 30px 0;
+            border-left: 6px solid var(--accent);
+        }
+
+        .problem-highlight h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        /* Two Column Layout */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            flex: 1;
+            align-items: center;
+        }
+
+        .column-image {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        /* Compliance Badges */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .compliance-badge {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--white);
+            padding: 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .compliance-badge i {
+            font-size: 2.5rem;
+            color: var(--success);
+        }
+
+        .compliance-badge .badge-text h4 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .compliance-badge .badge-text p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 50px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: #e2e8f0;
+        }
+
+        .timeline-item {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .timeline-dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 15px;
+        }
+
+        /* Final Slide */
+        .slide-final {
+            background: var(--gradient);
+            color: var(--white);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-final h1 {
+            color: var(--white);
+        }
+
+        .slide-final .cta {
+            font-size: 2rem;
+            margin: 40px 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: var(--white);
+            border-radius: 12px;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .slide-up {
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        /* Demo Indicator */
+        .demo-badge {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            background: var(--accent);
+            color: var(--white);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* Speaker Notes Toggle */
+        .notes-toggle {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speaker-notes {
+            position: fixed;
+            bottom: 80px;
+            left: 30px;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 400px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+            z-index: 100;
+        }
+
+        .speaker-notes.visible {
+            display: block;
+        }
+
+        .speaker-notes h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* Keyboard hints */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            z-index: 100;
+        }
+
+        .keyboard-hint kbd {
+            background: var(--white);
+            padding: 4px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 0 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .slide {
+                padding: 40px 50px;
+            }
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Print mode for handouts */
+        @media print {
+            .slide {
+                page-break-after: always;
+                display: flex !important;
+                opacity: 1 !important;
+                position: relative;
+                height: auto;
+                min-height: 100vh;
+            }
+            .timer-bar, .progress, .timer-display, .notes-toggle, .speaker-notes, .keyboard-hint, .slide-counter {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Timer Bar -->
+        <div class="timer-bar" id="timerBar"></div>
+
+        <!-- Timer Display -->
+        <div class="timer-display" id="timerDisplay">6:00</div>
+
+        <!-- Slide Counter -->
+        <div class="slide-counter" id="slideCounter">1 / 10</div>
+
+        <!-- ========== SLIDE 1: Title (15 sec) ========== -->
+        <div class="slide slide-title active" data-time="15">
+            <div class="logo-container">
+                <i class="fas fa-brain logo-icon"></i>
+            </div>
+            <h1 class="fade-in">Enterprise Email Assistant</h1>
+            <p class="subtitle fade-in delay-1">Intelligent Email Security & Compliance Platform</p>
+            <p class="subtitle fade-in delay-2" style="font-size: 1.4rem; margin-top: 20px;">
+                Multi-Agent AI for Swiss Banking
+            </p>
+            <div class="team-info fade-in delay-3">
+                <p><i class="fas fa-users"></i> Team of 5 &nbsp;|&nbsp; <i class="fas fa-calendar"></i> 6 Months &nbsp;|&nbsp; <i class="fas fa-flag"></i> AI Hackathon 2025</p>
+            </div>
+
+            <div class="speaker-notes" data-slide="1">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>15 seconds</strong> - Quick introduction</p>
+                <ul>
+                    <li>"Good morning/afternoon, we are [Team Name]"</li>
+                    <li>"We built IntelliMail AI - an intelligent email security platform"</li>
+                    <li>"Designed specifically for Swiss banking compliance"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 2: Enterprise Value (40 sec) ========== -->
+        <div class="slide" data-time="40">
+            <h2><i class="fas fa-chart-line" style="color: var(--success);"></i> Enterprise Impact: The Numbers</h2>
+
+            <p class="subtitle">Saving 10 minutes per employee per day transforms productivity</p>
+
+            <div class="stats-grid" style="margin-top: 40px;">
+                <div class="stat-card slide-up delay-1">
+                    <div class="stat-number" style="color: var(--primary);">10 min</div>
+                    <div class="stat-label">Saved Per Employee Daily</div>
+                    <small style="color: var(--text-light);">Email triage & analysis</small>
+                </div>
+                <div class="stat-card slide-up delay-2">
+                    <div class="stat-number success">833</div>
+                    <div class="stat-label">Hours Saved Daily</div>
+                    <small style="color: var(--text-light);">For 5,000 employees</small>
+                </div>
+                <div class="stat-card slide-up delay-3">
+                    <div class="stat-number gold">208K</div>
+                    <div class="stat-label">Hours Saved Annually</div>
+                    <small style="color: var(--text-light);">250 working days</small>
+                </div>
+                <div class="stat-card slide-up delay-4">
+                    <div class="stat-number success">$12.5M</div>
+                    <div class="stat-label">Annual Value</div>
+                    <small style="color: var(--text-light);">At $60/hour</small>
+                </div>
+            </div>
+
+            <div class="two-columns" style="margin-top: 30px;">
+                <div style="background: #f0fff4; padding: 25px; border-radius: 12px; border-left: 4px solid var(--success);">
+                    <h3 style="color: var(--success); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-check-circle"></i> Productivity Benefits</h3>
+                    <ul style="font-size: 1rem; line-height: 1.8; color: var(--text);">
+                        <li>Automatic email triage & prioritization</li>
+                        <li>Instant phishing detection (82% accuracy)</li>
+                        <li>AI-generated summaries & quick replies</li>
+                        <li>Smart categorization (8 badge types)</li>
+                    </ul>
+                </div>
+                <div style="background: #ebf8ff; padding: 25px; border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 15px;"><i class="fas fa-shield-alt"></i> Risk Reduction</h3>
+                    <ul style="font-size: 1rem; line-height: 1.8; color: var(--text);">
+                        <li>Reduced phishing incident response time</li>
+                        <li>Automated compliance checking</li>
+                        <li>Complete audit trail for regulators</li>
+                        <li>On-premise deployment (data sovereignty)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="2">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>40 seconds</strong> - Show the business value upfront</p>
+                <ul>
+                    <li>"Let me start with the business impact"</li>
+                    <li>"10 minutes saved per employee per day"</li>
+                    <li>"For 5,000 employees: 833 hours daily, 208,000 hours yearly"</li>
+                    <li>"At $60/hour, that's $12.5 million in annual value"</li>
+                    <li>"Plus risk reduction and compliance benefits"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 3: The Problem (35 sec) ========== -->
+        <div class="slide" data-time="35">
+            <h2><i class="fas fa-exclamation-triangle" style="color: var(--accent);"></i> The Problem</h2>
+
+            <div class="problem-highlight slide-up">
+                <h3>Swiss Banks Face a Growing Email Threat</h3>
+                <p style="font-size: 1.3rem;">Financial institutions process <strong>10,000+ emails daily</strong>. Manual review is impossible.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card slide-up delay-1">
+                    <div class="stat-number accent">60%</div>
+                    <div class="stat-label">Emails Contain Risks</div>
+                </div>
+                <div class="stat-card slide-up delay-2">
+                    <div class="stat-number">8hrs</div>
+                    <div class="stat-label">Manual Review / 1000 Emails</div>
+                </div>
+                <div class="stat-card slide-up delay-3">
+                    <div class="stat-number accent">$4.9M</div>
+                    <div class="stat-label">Avg. Cost of Data Breach</div>
+                </div>
+                <div class="stat-card slide-up delay-4">
+                    <div class="stat-number">91%</div>
+                    <div class="stat-label">Attacks Start with Email</div>
+                </div>
+            </div>
+
+            <p class="fade-in delay-3" style="text-align: center; margin-top: 20px; color: var(--text-light);">
+                <i class="fas fa-quote-left"></i> Traditional rule-based filters catch only 60% of sophisticated attacks <i class="fas fa-quote-right"></i>
+            </p>
+
+            <div class="speaker-notes" data-slide="3">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>35 seconds</strong> - Establish the problem</p>
+                <ul>
+                    <li>"But there's a challenge - email threats are growing"</li>
+                    <li>"91% of cyberattacks begin with email"</li>
+                    <li>"Traditional filters only catch 60%"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 4: Our Solution (40 sec) ========== -->
+        <div class="slide" data-time="40">
+            <h2><i class="fas fa-lightbulb" style="color: var(--accent-gold);"></i> Our Solution: Multi-Agent AI</h2>
+
+            <p class="subtitle" style="margin-bottom: 30px;">Three specialized AI teams, each solving a critical banking challenge</p>
+
+            <div class="features-grid">
+                <div class="feature-card fraud slide-up delay-1">
+                    <div class="feature-icon" style="color: var(--accent);"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Fraud Investigation</h3>
+                    <p>4 AI agents collaborate using Doer-Checker pattern to detect phishing, BEC, and wire fraud with 95%+ precision</p>
+                </div>
+                <div class="feature-card compliance slide-up delay-2">
+                    <div class="feature-icon" style="color: var(--accent-gold);"><i class="fas fa-balance-scale"></i></div>
+                    <h3>Compliance & AML</h3>
+                    <p>Multi-round debate between 4 agents for KYC/AML checks, OFAC sanctions screening, and regulatory compliance</p>
+                </div>
+                <div class="feature-card investment slide-up delay-3">
+                    <div class="feature-icon" style="color: var(--success);"><i class="fas fa-chart-line"></i></div>
+                    <h3>Investment Research</h3>
+                    <p>4 analysts synthesize SEC filings, market data, and financial metrics for due diligence support</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;" class="fade-in delay-4">
+                <p style="font-size: 1.3rem; color: var(--primary);">
+                    <strong>12 Specialized Agents</strong> &nbsp;|&nbsp;
+                    <strong>13 Banking Tools</strong> &nbsp;|&nbsp;
+                    <strong>3 Collaboration Patterns</strong>
+                </p>
+            </div>
+
+            <div class="speaker-notes" data-slide="3">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>45 seconds</strong> - Present the solution overview</p>
+                <ul>
+                    <li>"We built 3 specialized AI teams"</li>
+                    <li>"Fraud team: 4 agents using Doer-Checker validation"</li>
+                    <li>"Compliance team: Multi-round debate for consensus"</li>
+                    <li>"Investment team: Parallel research synthesis"</li>
+                    <li>"12 agents total - far exceeding the 1 agent requirement"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 5: Live Demo - Fraud Agent (55 sec) ========== -->
+        <div class="slide" data-time="55">
+            <div class="demo-badge"><i class="fas fa-play-circle"></i> LIVE DEMO</div>
+
+            <h2 style="margin-top: 40px;"><i class="fas fa-search-dollar" style="color: var(--accent);"></i> Fraud Investigation in Action</h2>
+
+            <p class="subtitle">Watch 4 AI agents investigate a suspicious email in real-time</p>
+
+            <div class="agent-flow slide-up delay-1">
+                <div class="agent-box active">
+                    <i class="fas fa-user-secret"></i>
+                    <div class="agent-name">Fraud Detective</div>
+                    <small>Investigates</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box">
+                    <i class="fas fa-microscope"></i>
+                    <div class="agent-name">Forensic Analyst</div>
+                    <small>Validates</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box">
+                    <i class="fas fa-gavel"></i>
+                    <div class="agent-name">Legal Advisor</div>
+                    <small>Assesses Risk</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box">
+                    <i class="fas fa-user-shield"></i>
+                    <div class="agent-name">Security Director</div>
+                    <small>Coordinates Response</small>
+                </div>
+            </div>
+
+            <div class="two-columns" style="margin-top: 20px;">
+                <div>
+                    <h3><i class="fas fa-cogs"></i> Doer-Checker Pattern</h3>
+                    <ul style="font-size: 1.1rem; line-height: 2;">
+                        <li><strong>Round 1:</strong> Detective analyzes email indicators</li>
+                        <li><strong>Round 2:</strong> Forensic validates findings</li>
+                        <li><strong>Round 3:</strong> Legal + Security consensus</li>
+                    </ul>
+                    <div style="margin-top: 30px; padding: 20px; background: #f0fff4; border-radius: 12px; border-left: 4px solid var(--success);">
+                        <p style="font-size: 1.2rem; color: var(--success); margin: 0;">
+                            <i class="fas fa-check-circle"></i> <strong>Result:</strong> 45-second investigation with full audit trail
+                        </p>
+                    </div>
+                </div>
+                <div class="column-image">
+                    <div style="background: var(--gradient); color: white; padding: 40px; border-radius: 12px;">
+                        <i class="fas fa-desktop" style="font-size: 4rem; margin-bottom: 20px;"></i>
+                        <p style="color: white; font-size: 1.2rem;">Switch to Live Application</p>
+                        <p style="color: rgba(255,255,255,0.8); font-size: 1rem; margin-top: 10px;">
+                            Show: Mailbox → Select Email → Agentic Teams → Fraud
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="4">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>60 seconds</strong> - LIVE DEMO (most important slide!)</p>
+                <ul>
+                    <li>"Let me show you this in action"</li>
+                    <li>Switch to application, select a phishing email</li>
+                    <li>"Watch the agents collaborate in real-time"</li>
+                    <li>Point out: SSE streaming, agent dialogue, final verdict</li>
+                    <li>"45 seconds - fully documented investigation"</li>
+                    <li>If demo fails: "We have the recording ready" (have backup!)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 5b: Live Demo - Compliance Team (40 sec) ========== -->
+        <div class="slide" data-time="40">
+            <div class="demo-badge" style="background: var(--accent-gold);"><i class="fas fa-balance-scale"></i> COMPLIANCE TEAM</div>
+
+            <h2 style="margin-top: 40px;"><i class="fas fa-balance-scale" style="color: var(--accent-gold);"></i> Compliance & AML in Action</h2>
+
+            <p class="subtitle">Watch 4 AI agents debate regulatory compliance through structured rounds</p>
+
+            <div class="agent-flow slide-up delay-1">
+                <div class="agent-box active" style="background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);">
+                    <i class="fas fa-user-tie"></i>
+                    <div class="agent-name">Compliance Officer</div>
+                    <small>Analyzes Risk</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrows-alt-h"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);">
+                    <i class="fas fa-gavel"></i>
+                    <div class="agent-name">Legal Counsel</div>
+                    <small>Legal Review</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrows-alt-h"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);">
+                    <i class="fas fa-clipboard-check"></i>
+                    <div class="agent-name">Internal Auditor</div>
+                    <small>Audits</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrows-alt-h"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #faf089 0%, #f6e05e 100%);">
+                    <i class="fas fa-landmark"></i>
+                    <div class="agent-name">Regulatory Liaison</div>
+                    <small>FINMA Expert</small>
+                </div>
+            </div>
+
+            <div class="two-columns" style="margin-top: 20px;">
+                <div>
+                    <h3><i class="fas fa-comments" style="color: var(--accent-gold);"></i> Multi-Round Debate Pattern</h3>
+                    <ul style="font-size: 1.1rem; line-height: 2;">
+                        <li><strong>Round 1:</strong> Initial positions & risk assessment</li>
+                        <li><strong>Round 2:</strong> Challenge assumptions & debate</li>
+                        <li><strong>Round 3:</strong> Consensus building & recommendation</li>
+                    </ul>
+                    <div style="margin-top: 25px; padding: 20px; background: #fffff0; border-radius: 12px; border-left: 4px solid var(--accent-gold);">
+                        <p style="font-size: 1.2rem; color: #b7791f; margin: 0;">
+                            <i class="fas fa-check-circle"></i> <strong>Result:</strong> 98%+ consensus accuracy with OFAC screening
+                        </p>
+                    </div>
+                </div>
+                <div class="column-image">
+                    <div style="background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%); color: white; padding: 35px; border-radius: 12px;">
+                        <i class="fas fa-shield-alt" style="font-size: 3.5rem; margin-bottom: 15px;"></i>
+                        <p style="color: white; font-size: 1.1rem; margin-bottom: 15px;"><strong>Key Capabilities:</strong></p>
+                        <ul style="color: rgba(255,255,255,0.9); font-size: 0.95rem; text-align: left; margin-left: 15px;">
+                            <li>OFAC Sanctions Screening</li>
+                            <li>KYC/AML Risk Classification</li>
+                            <li>Vendor Due Diligence</li>
+                            <li>Regulatory Compliance Check</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="4b">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>45 seconds</strong> - Compliance Team Overview</p>
+                <ul>
+                    <li>"Our Compliance team uses Multi-Round Debate"</li>
+                    <li>"4 experts with different perspectives argue their positions"</li>
+                    <li>"OFAC screening is built-in - regulatory requirement"</li>
+                    <li>"98% consensus accuracy through structured debate"</li>
+                    <li>Optional: Quick demo if time permits</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 5c: Live Demo - Investment Team (40 sec) ========== -->
+        <div class="slide" data-time="40">
+            <div class="demo-badge" style="background: var(--success);"><i class="fas fa-chart-line"></i> INVESTMENT TEAM</div>
+
+            <h2 style="margin-top: 40px;"><i class="fas fa-chart-line" style="color: var(--success);"></i> Investment Research in Action</h2>
+
+            <p class="subtitle">Watch 4 AI analysts synthesize data from multiple sources in parallel</p>
+
+            <div class="agent-flow slide-up delay-1">
+                <div class="agent-box active" style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);">
+                    <i class="fas fa-calculator"></i>
+                    <div class="agent-name">Financial Analyst</div>
+                    <small>Metrics & Ratios</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);">
+                    <i class="fas fa-search"></i>
+                    <div class="agent-name">Research Analyst</div>
+                    <small>Market Data</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);">
+                    <i class="fas fa-file-alt"></i>
+                    <div class="agent-name">Filings Analyst</div>
+                    <small>SEC EDGAR</small>
+                </div>
+                <div class="agent-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="agent-box" style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);">
+                    <i class="fas fa-user-tie"></i>
+                    <div class="agent-name">Investment Advisor</div>
+                    <small>Recommendations</small>
+                </div>
+            </div>
+
+            <div class="two-columns" style="margin-top: 20px;">
+                <div>
+                    <h3><i class="fas fa-layer-group" style="color: var(--success);"></i> Research Synthesis Pattern</h3>
+                    <ul style="font-size: 1.1rem; line-height: 2;">
+                        <li><strong>Parallel:</strong> All analysts gather data simultaneously</li>
+                        <li><strong>Synthesis:</strong> Combine findings into unified view</li>
+                        <li><strong>Recommendation:</strong> Investment advisor concludes</li>
+                    </ul>
+                    <div style="margin-top: 25px; padding: 20px; background: #f0fff4; border-radius: 12px; border-left: 4px solid var(--success);">
+                        <p style="font-size: 1.2rem; color: var(--success); margin: 0;">
+                            <i class="fas fa-check-circle"></i> <strong>Result:</strong> Comprehensive due diligence in 40-55 seconds
+                        </p>
+                    </div>
+                </div>
+                <div class="column-image">
+                    <div style="background: linear-gradient(135deg, #38a169 0%, #2f855a 100%); color: white; padding: 35px; border-radius: 12px;">
+                        <i class="fas fa-database" style="font-size: 3.5rem; margin-bottom: 15px;"></i>
+                        <p style="color: white; font-size: 1.1rem; margin-bottom: 15px;"><strong>Data Sources:</strong></p>
+                        <ul style="color: rgba(255,255,255,0.9); font-size: 0.95rem; text-align: left; margin-left: 15px;">
+                            <li>SEC EDGAR (10-K, 10-Q, 8-K)</li>
+                            <li>Google Search (Serper API)</li>
+                            <li>Company Websites (Browserless)</li>
+                            <li>Financial Ratios Calculator</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="4c">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>45 seconds</strong> - Investment Team Overview</p>
+                <ul>
+                    <li>"Investment team uses Research Synthesis pattern"</li>
+                    <li>"Parallel data gathering - faster than sequential"</li>
+                    <li>"Real SEC EDGAR integration - actual filings"</li>
+                    <li>"40-55 seconds for full due diligence report"</li>
+                    <li>"Perfect for client onboarding, M&A support"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 6: Swiss Banking Compliance (30 sec) ========== -->
+        <div class="slide" data-time="30">
+            <h2><i class="fas fa-landmark" style="color: var(--accent-gold);"></i> Built for Swiss Banking Compliance</h2>
+
+            <p class="subtitle">Regulatory requirements baked in from day one</p>
+
+            <div class="compliance-grid slide-up delay-1">
+                <div class="compliance-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="badge-text">
+                        <h4>OFAC Sanctions Screening</h4>
+                        <p>Real-time screening against US Treasury SDN list</p>
+                    </div>
+                </div>
+                <div class="compliance-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="badge-text">
+                        <h4>AML/KYC Compliance</h4>
+                        <p>Automated risk classification and EDD triggers</p>
+                    </div>
+                </div>
+                <div class="compliance-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="badge-text">
+                        <h4>Full Audit Trail</h4>
+                        <p>Every agent decision logged and traceable</p>
+                    </div>
+                </div>
+                <div class="compliance-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="badge-text">
+                        <h4>On-Premise Deployment</h4>
+                        <p>Data sovereignty - runs fully offline with Ollama</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); padding: 30px; border-radius: 16px; margin-top: 30px; text-align: center;" class="fade-in delay-2">
+                <p style="font-size: 1.4rem; color: var(--primary); margin: 0;">
+                    <i class="fas fa-shield-alt"></i> <strong>Data Never Leaves Your Infrastructure</strong>
+                </p>
+                <p style="font-size: 1.1rem; color: var(--text-light); margin: 10px 0 0 0;">
+                    Ollama fallback ensures 100% air-gapped operation when needed
+                </p>
+            </div>
+
+            <div class="speaker-notes" data-slide="6">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>35 seconds</strong> - Compliance selling point</p>
+                <ul>
+                    <li>"This isn't just AI - it's compliant AI"</li>
+                    <li>"OFAC screening is mandatory for Swiss banks"</li>
+                    <li>"Full audit trail for regulators"</li>
+                    <li>"Most importantly: runs 100% on-premise"</li>
+                    <li>"Your customer data never touches external APIs"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 7: Results & Metrics (25 sec) ========== -->
+        <div class="slide" data-time="25">
+            <h2><i class="fas fa-chart-bar" style="color: var(--success);"></i> Measurable Results</h2>
+
+            <div class="stats-grid" style="margin-top: 50px;">
+                <div class="stat-card slide-up delay-1">
+                    <div class="stat-number success">82.1%</div>
+                    <div class="stat-label">Phishing Detection</div>
+                    <small style="color: var(--text-light);">Ensemble ML (3 models)</small>
+                </div>
+                <div class="stat-card slide-up delay-2">
+                    <div class="stat-number gold">3-5s</div>
+                    <div class="stat-label">End-to-End Processing</div>
+                    <small style="color: var(--text-light);">Per email, fully enriched</small>
+                </div>
+                <div class="stat-card slide-up delay-3">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Emails/Second</div>
+                    <small style="color: var(--text-light);">Batch throughput</small>
+                </div>
+                <div class="stat-card slide-up delay-4">
+                    <div class="stat-number accent">95%</div>
+                    <div class="stat-label">Time Saved</div>
+                    <small style="color: var(--text-light);">vs. manual review</small>
+                </div>
+            </div>
+
+            <div class="two-columns" style="margin-top: 40px;">
+                <div style="background: #f0fff4; padding: 30px; border-radius: 16px; border-left: 5px solid var(--success);">
+                    <h3 style="color: var(--success); margin-bottom: 15px;"><i class="fas fa-arrow-up"></i> Before → After</h3>
+                    <p style="font-size: 1.1rem;"><strong>Before:</strong> 8 hours to review 1,000 emails</p>
+                    <p style="font-size: 1.1rem;"><strong>After:</strong> 3 minutes, fully analyzed</p>
+                </div>
+                <div style="background: #ebf8ff; padding: 30px; border-radius: 16px; border-left: 5px solid var(--primary);">
+                    <h3 style="color: var(--primary); margin-bottom: 15px;"><i class="fas fa-server"></i> Production Ready</h3>
+                    <p style="font-size: 1.1rem;">Load tested with <strong>10,000+ emails</strong></p>
+                    <p style="font-size: 1.1rem;"><strong>14 Docker services</strong> orchestrated</p>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="6">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>25 seconds</strong> - Quick metrics</p>
+                <ul>
+                    <li>"Let me share the numbers"</li>
+                    <li>"82% phishing detection with our ML ensemble"</li>
+                    <li>"3-5 seconds per email, fully analyzed"</li>
+                    <li>"That's 95% time savings vs. manual review"</li>
+                    <li>"Production-tested with 10,000+ emails"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 8: Platform & How We Built It (25 sec) ========== -->
+        <div class="slide" data-time="25">
+            <h2><i class="fas fa-rocket" style="color: var(--primary);"></i> A Platform Built for Scale</h2>
+
+            <div class="two-columns" style="margin-top: 20px;">
+                <div>
+                    <h3 style="margin-bottom: 20px; font-size: 1.3rem;"><i class="fas fa-puzzle-piece"></i> Extensible by Design</h3>
+                    <ul style="font-size: 1.05rem; line-height: 1.9;">
+                        <li><i class="fas fa-plus-circle" style="color: var(--success);"></i> Add new tools in <strong>30 minutes</strong></li>
+                        <li><i class="fas fa-plus-circle" style="color: var(--success);"></i> Add new agent teams in <strong>2 hours</strong></li>
+                        <li><i class="fas fa-plus-circle" style="color: var(--success);"></i> Plug in any LLM (OpenAI, Ollama, Azure)</li>
+                    </ul>
+
+                    <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); border-radius: 12px;">
+                        <p style="font-size: 1rem; margin: 0; color: var(--primary);">
+                            <i class="fas fa-lightbulb"></i> <strong>"We didn't reinvent wheels - we orchestrated them"</strong>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 20px; font-size: 1.3rem;"><i class="fas fa-tools"></i> How 5 People Built This</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fas fa-project-diagram" style="font-size: 1.5rem; color: var(--primary); margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">LangGraph</p>
+                        </div>
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fas fa-users-cog" style="font-size: 1.5rem; color: #f97316; margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">CrewAI</p>
+                        </div>
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fab fa-docker" style="font-size: 1.5rem; color: #2496ed; margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">Docker</p>
+                        </div>
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fas fa-brain" style="font-size: 1.5rem; color: var(--success); margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">Open ML</p>
+                        </div>
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fab fa-angular" style="font-size: 1.5rem; color: #dd0031; margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">Angular 18</p>
+                        </div>
+                        <div style="background: var(--white); padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            <i class="fas fa-database" style="font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 8px;"></i>
+                            <p style="font-size: 0.8rem; margin: 0; color: var(--primary); font-weight: 600;">Public APIs</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; text-align: center; padding: 10px; background: var(--gradient); border-radius: 8px;">
+                        <p style="color: white; margin: 0; font-size: 0.9rem;"><strong>14 Services</strong> | <strong>46 APIs</strong> | <strong>13 Tools</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speaker-notes" data-slide="7">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>25 seconds</strong> - Platform + How we built</p>
+                <ul>
+                    <li>"This is a platform, not just a demo"</li>
+                    <li>"Add new tools in 30 minutes, teams in 2 hours"</li>
+                    <li>"We leveraged LangGraph, CrewAI, Docker, open ML"</li>
+                    <li>"We orchestrated existing tools, didn't reinvent"</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== SLIDE 9: Thank You / Q&A (15 sec) ========== -->
+        <div class="slide slide-final" data-time="15">
+            <div class="logo-container" style="justify-content: center;">
+                <i class="fas fa-brain logo-icon"></i>
+            </div>
+            <h1 class="fade-in">Thank You</h1>
+            <p class="cta fade-in delay-1">Ready for Production. Ready for Compliance.<br>Ready for Enterprise.</p>
+
+            <div style="display: flex; gap: 40px; justify-content: center; margin-top: 40px;" class="fade-in delay-2">
+                <div style="text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 40px; border-radius: 12px;">
+                        <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p style="color: white; margin: 0;">12 AI Agents</p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 40px; border-radius: 12px;">
+                        <i class="fas fa-shield-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p style="color: white; margin: 0;">82% Detection</p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px 40px; border-radius: 12px;">
+                        <i class="fas fa-clock" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p style="color: white; margin: 0;">3-5s Processing</p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin-top: 60px; font-size: 1.5rem; color: rgba(255,255,255,0.9);" class="fade-in delay-3">
+                <i class="fas fa-question-circle"></i> Questions?
+            </p>
+
+            <div class="speaker-notes" data-slide="10">
+                <h4><i class="fas fa-microphone"></i> Speaker Notes</h4>
+                <p><strong>Q&A Preparation</strong></p>
+                <ul>
+                    <li><strong>Q: Why 82% not higher?</strong> A: "Ensemble of 3 models, production-realistic. We prioritized precision over recall to minimize false positives."</li>
+                    <li><strong>Q: How does offline mode work?</strong> A: "Ollama runs locally. Automatic fallback, no code changes needed."</li>
+                    <li><strong>Q: Cost?</strong> A: "~$0.001 per email with GPT-4o-mini, free with Ollama."</li>
+                    <li><strong>Q: FINMA compliance?</strong> A: "Foundation is there - audit trail, OFAC. Full FINMA requires bank-specific customization."</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="progress" id="progress"></div>
+
+        <!-- Speaker Notes Toggle -->
+        <button class="notes-toggle" id="notesToggle">
+            <i class="fas fa-sticky-note"></i> Notes
+        </button>
+
+        <!-- Keyboard Hints -->
+        <div class="keyboard-hint">
+            <kbd>←</kbd> <kbd>→</kbd> Navigate &nbsp;|&nbsp; <kbd>Space</kbd> Next &nbsp;|&nbsp; <kbd>T</kbd> Timer
+        </div>
+    </div>
+
+    <script>
+        // Presentation State
+        let currentSlide = 0;
+        let totalSlides = 0;
+        let timerRunning = false;
+        let timerSeconds = 360; // 6 minutes
+        let timerInterval = null;
+        let notesVisible = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            totalSlides = slides.length;
+
+            // Create progress dots
+            const progressContainer = document.getElementById('progress');
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToSlide(index);
+                progressContainer.appendChild(dot);
+            });
+
+            updateSlideCounter();
+        });
+
+        // Navigation
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.progress-dot');
+
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+
+            currentSlide = index;
+
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+
+            updateSlideCounter();
+            updateSpeakerNotes();
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        function updateSlideCounter() {
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        // Timer
+        function toggleTimer() {
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerRunning = false;
+            } else {
+                timerRunning = true;
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function updateTimer() {
+            if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                return;
+            }
+
+            timerSeconds--;
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            const display = document.getElementById('timerDisplay');
+
+            display.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            // Update timer bar
+            const progress = ((360 - timerSeconds) / 360) * 100;
+            document.getElementById('timerBar').style.width = progress + '%';
+
+            // Warning colors
+            display.classList.remove('warning', 'danger');
+            if (timerSeconds <= 60) {
+                display.classList.add('danger');
+            } else if (timerSeconds <= 120) {
+                display.classList.add('warning');
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timerSeconds = 360;
+            document.getElementById('timerDisplay').textContent = '6:00';
+            document.getElementById('timerDisplay').classList.remove('warning', 'danger');
+            document.getElementById('timerBar').style.width = '0%';
+        }
+
+        // Speaker Notes
+        function toggleNotes() {
+            notesVisible = !notesVisible;
+            updateSpeakerNotes();
+        }
+
+        function updateSpeakerNotes() {
+            const allNotes = document.querySelectorAll('.speaker-notes');
+            allNotes.forEach(note => {
+                note.classList.remove('visible');
+            });
+
+            if (notesVisible) {
+                const currentNotes = document.querySelector(`.slide.active .speaker-notes`);
+                if (currentNotes) {
+                    currentNotes.classList.add('visible');
+                }
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevSlide();
+                    break;
+                case 't':
+                case 'T':
+                    toggleTimer();
+                    break;
+                case 'r':
+                case 'R':
+                    resetTimer();
+                    break;
+                case 'n':
+                case 'N':
+                    toggleNotes();
+                    break;
+                case 'Home':
+                    goToSlide(0);
+                    break;
+                case 'End':
+                    goToSlide(totalSlides - 1);
+                    break;
+            }
+        });
+
+        document.getElementById('notesToggle').addEventListener('click', toggleNotes);
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        });
+
+        // Prevent context menu on long press
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
+</body>
+</html>

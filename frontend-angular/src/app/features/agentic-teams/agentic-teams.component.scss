@@ -603,8 +603,10 @@
   resize: vertical;
 }
 
-/* Investment Progress Tracker */
-.investment-progress-tracker {
+/* Progress Trackers - Unified Styling for All Workflows */
+.investment-progress-tracker,
+.fraud-progress-tracker,
+.compliance-progress-tracker {
   background: white;
   border-radius: 12px;
   padding: 25px;

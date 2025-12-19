@@ -50,8 +50,54 @@
             }
           </div>
 
+          <!-- Task Options Selection UI -->
+          @if (loadingTaskOptions) {
+            <div class="mb-3 p-3" style="background: #fff9f0; border-left: 4px solid #f39c12; border-radius: 4px;">
+              <div class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading task options...</span>
+                </div>
+                <p class="mt-2 mb-0">Analyzing email and preparing task options...</p>
+              </div>
+            </div>
+          }
+
+          @if (showTaskOptions && taskOptions.length > 0) {
+            <div class="mb-3 p-3" style="background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
+              <h6><i class="material-icons-round" style="font-size: 20px; vertical-align: middle;">task_alt</i> Select Task for {{ getTeamDisplayName(selectedTeam!) }}</h6>
+              <p class="text-sm mb-3">Choose which specific task the agentic team should focus on:</p>
+
+              <div class="task-options-grid">
+                @for (task of taskOptions; track task.id) {
+                  <div class="task-option-card" (click)="selectTask(task)">
+                    <div class="task-option-header">
+                      <span class="task-option-title">{{ task.title }}</span>
+                      <span class="badge text-white ms-2" [ngClass]="getPriorityBadgeClass(task.priority)">
+                        {{ task.priority }}
+                      </span>
+                    </div>
+                    <div class="task-option-description">{{ task.description }}</div>
+                    <div class="task-option-action">
+                      <button class="btn btn-sm btn-primary">
+                        <i class="material-icons-round" style="font-size: 14px; vertical-align: middle;">play_arrow</i>
+                        Start This Task
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="mt-3">
+                <button class="btn btn-sm btn-secondary" (click)="cancelTaskSelection()">
+                  <i class="material-icons-round" style="font-size: 14px; vertical-align: middle;">arrow_back</i>
+                  Back to Team Selection
+                </button>
+              </div>
+            </div>
+          }
+
           <!-- Agentic Team Assignment Section -->
-          @if (email.suggested_team || email.assigned_team) {
+          @if (!showTaskOptions && !loadingTaskOptions && (email.suggested_team || email.assigned_team)) {
             <div class="mb-3 p-3" style="background: #f0f8ff; border-left: 4px solid #2980b9; border-radius: 4px;">
               <h6><i class="material-icons-round" style="font-size: 20px; vertical-align: middle;">groups</i> Agentic Team Assignment</h6>
 
@@ -96,7 +142,9 @@
                 </div>
               }
             </div>
-          } @else {
+          }
+
+          @if (!showTaskOptions && !loadingTaskOptions && !email.suggested_team && !email.assigned_team) {
             <div class="mb-3 p-3" style="background: #fff9f0; border-left: 4px solid #f39c12; border-radius: 4px;">
               <h6><i class="material-icons-round" style="font-size: 20px; vertical-align: middle;">psychology</i> Assign to Agentic Team</h6>
               <p class="text-sm mb-2">This email can be analyzed by our virtual bank teams. Select a team to start the agentic workflow:</p>
@@ -112,8 +160,8 @@
             </div>
           }
 
-          <!-- Fraud Detection Progress Tracker -->
-          @if (showFraudProgress) {
+          <!-- Unified Workflow Progress Tracker -->
+          @if (showWorkflowProgress && currentWorkflowType === 'fraud') {
             <div class="fraud-progress-tracker">
               <div class="progress-tracker-title">
                 <span>🔍</span>
@@ -141,7 +189,6 @@
               </div>
             </div>
 
-            <!-- Fraud Analysis Messages -->
             <div class="fraud-messages-container">
               @if (fraudMessages.length === 0) {
                 <div style="text-align: center; color: #999; padding: 20px;">
@@ -161,13 +208,103 @@
                 }
               }
             </div>
+          }
 
-            <!-- Chat Input for Fraud Discussion -->
-            <div class="fraud-chat-input">
-              <textarea class="form-control"
-                        rows="2"
-                        placeholder="Ask the fraud detection team a question..."></textarea>
-              <small class="text-muted">💬 Chat is now active! Ask questions during or after the analysis.</small>
+          @if (showWorkflowProgress && currentWorkflowType === 'investment') {
+            <div class="investment-progress-tracker">
+              <div class="progress-tracker-title">
+                <span>📊</span>
+                <span>Investment Analysis Progress</span>
+              </div>
+              <div class="progress-steps">
+                @for (step of investmentProgressSteps; track step.label) {
+                  <div class="progress-step" [ngClass]="step.status">
+                    <div class="step-icon">{{ step.icon }}</div>
+                    <div class="step-label">{{ step.label }}</div>
+                    <div class="step-status">
+                      @if (step.status === 'completed') {
+                        ✓ Complete
+                      } @else if (step.status === 'active') {
+                        In Progress...
+                      } @else {
+                        Pending...
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="progress-timeline">
+                <div class="progress-timeline-fill" [style.width.%]="investmentProgressPercent"></div>
+              </div>
+            </div>
+
+            <div class="investment-messages-container">
+              @if (investmentMessages.length === 0) {
+                <div style="text-align: center; color: #999; padding: 20px;">
+                  <i class="material-icons-round" style="font-size: 48px;">hourglass_empty</i>
+                  <p>Waiting for analysis to begin...</p>
+                </div>
+              } @else {
+                @for (message of investmentMessages; track $index) {
+                  <div class="investment-message">
+                    <div class="investment-message-header">
+                      <span class="investment-message-icon">{{ message.icon }}</span>
+                      <span class="investment-message-agent">{{ message.agentName }}</span>
+                      <span class="investment-message-time">{{ message.timestamp }}</span>
+                    </div>
+                    <div class="investment-message-content">{{ message.content }}</div>
+                  </div>
+                }
+              }
+            </div>
+          }
+
+          @if (showWorkflowProgress && currentWorkflowType === 'compliance') {
+            <div class="compliance-progress-tracker">
+              <div class="progress-tracker-title">
+                <span>⚖️</span>
+                <span>Compliance Analysis Progress</span>
+              </div>
+              <div class="progress-steps">
+                @for (step of complianceProgressSteps; track step.label) {
+                  <div class="progress-step" [ngClass]="step.status">
+                    <div class="step-icon">{{ step.icon }}</div>
+                    <div class="step-label">{{ step.label }}</div>
+                    <div class="step-status">
+                      @if (step.status === 'completed') {
+                        ✓ Complete
+                      } @else if (step.status === 'active') {
+                        In Progress...
+                      } @else {
+                        Pending...
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="progress-timeline">
+                <div class="progress-timeline-fill" [style.width.%]="complianceProgressPercent"></div>
+              </div>
+            </div>
+
+            <div class="compliance-messages-container">
+              @if (complianceMessages.length === 0) {
+                <div style="text-align: center; color: #999; padding: 20px;">
+                  <i class="material-icons-round" style="font-size: 48px;">hourglass_empty</i>
+                  <p>Waiting for analysis to begin...</p>
+                </div>
+              } @else {
+                @for (message of complianceMessages; track $index) {
+                  <div class="compliance-message">
+                    <div class="compliance-message-header">
+                      <span class="compliance-message-icon">{{ message.icon }}</span>
+                      <span class="compliance-message-agent">{{ message.agentName }}</span>
+                      <span class="compliance-message-time">{{ message.timestamp }}</span>
+                    </div>
+                    <div class="compliance-message-content">{{ message.content }}</div>
+                  </div>
+                }
+              }
             </div>
           }
 

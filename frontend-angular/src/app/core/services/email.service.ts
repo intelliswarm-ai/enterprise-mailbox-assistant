@@ -30,10 +30,17 @@ export class EmailService {
     return this.http.post<{ count: number }>(`${this.apiUrl}/process-all`, {});
   }
 
+  analyzeEmailTasks(emailId: number, team: string): Observable<{ email_id: number; team: string; team_name: string; task_options: any[] }> {
+    return this.http.post<{ email_id: number; team: string; team_name: string; task_options: any[] }>(
+      `${this.apiUrl}/${emailId}/analyze-tasks`,
+      { team }
+    );
+  }
+
   assignTeamToEmail(assignment: TeamAssignment): Observable<{ status: string; email_id: number; assigned_team: string; task_id: string; workflow_url: string }> {
     return this.http.post<{ status: string; email_id: number; assigned_team: string; task_id: string; workflow_url: string }>(
       `${this.apiUrl}/${assignment.emailId}/assign-team`,
-      { team: assignment.team, assignment_message: assignment.message }
+      { team: assignment.team, assignment_message: assignment.message, selected_task: assignment.selectedTask }
     );
   }
 

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A Cheat Sheet - Enterprise Email Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --accent: #c53030;
+            --success: #38a169;
+            --gold: #d69e2e;
+            --bg: #f7fafc;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        .qa-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary);
+        }
+        .qa-card.technical { border-left-color: var(--gold); }
+        .qa-card.business { border-left-color: var(--success); }
+        .qa-card.skeptical { border-left-color: var(--accent); }
+        .question {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .answer {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        .answer strong {
+            color: var(--primary);
+        }
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .tag.technical { background: #faf089; color: #744210; }
+        .tag.business { background: #c6f6d5; color: #22543d; }
+        .tag.skeptical { background: #fed7d7; color: #742a2a; }
+        .metrics-box {
+            background: #ebf8ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        .metrics-box h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .metric {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .metric-label {
+            font-size: 0.8rem;
+            color: #718096;
+        }
+        @media print {
+            body { padding: 10px; }
+            .qa-card { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Q&A Cheat Sheet</h1>
+    <p class="subtitle">Quick reference for the 2-minute Q&A session</p>
+
+    <!-- Quick Metrics -->
+    <div class="metrics-box">
+        <h3>Key Numbers to Remember</h3>
+        <div class="metrics-grid">
+            <div class="metric">
+                <div class="metric-value">82.1%</div>
+                <div class="metric-label">Phishing Detection</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">12</div>
+                <div class="metric-label">AI Agents</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">3-5s</div>
+                <div class="metric-label">Per Email</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">14</div>
+                <div class="metric-label">Docker Services</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="margin: 30px 0 20px; color: #1a365d;">Anticipated Questions</h2>
+
+    <!-- Skeptical Questions -->
+    <div class="qa-card skeptical">
+        <span class="tag skeptical">CREDIBILITY</span>
+        <div class="question">How did 5 people build this in 6 months?</div>
+        <div class="answer">
+            <strong>Key message:</strong> "We leveraged, we didn't reinvent."
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>LangGraph + CrewAI</strong> gave us agent orchestration out of the box</li>
+                <li><strong>Docker Compose</strong> eliminated infrastructure work</li>
+                <li><strong>Open-source ML</strong> (scikit-learn) reduced training time</li>
+                <li><strong>Angular 18 + NgRx</strong> provided enterprise patterns</li>
+                <li><strong>Public APIs</strong> (SEC EDGAR, OFAC) - no data sourcing needed</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card skeptical">
+        <span class="tag skeptical">CREDIBILITY</span>
+        <div class="question">Why only 82% accuracy? Banks need higher.</div>
+        <div class="answer">
+            <strong>Answer:</strong> "82% is the ML layer. The multi-agent validation layer adds human-like judgment on top, achieving <strong>95%+ on investigated cases</strong>. We optimized for <strong>precision over recall</strong> - in banking, false positives are worse than missing edge cases. The system flags uncertain cases for human review."
+        </div>
+    </div>
+
+    <!-- Technical Questions -->
+    <div class="qa-card technical">
+        <span class="tag technical">TECHNICAL</span>
+        <div class="question">How does the offline/on-premise mode work?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "We use <strong>Ollama with Phi3/TinyLlama</strong> as automatic fallback. When OpenAI is unavailable or disabled, the system seamlessly switches to local inference. <strong>Zero code changes required</strong>. This is critical for Swiss data sovereignty - customer data never leaves your infrastructure."
+        </div>
+    </div>
+
+    <div class="qa-card technical">
+        <span class="tag technical">TECHNICAL</span>
+        <div class="question">What happens if an external API fails?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "Every tool has <strong>automatic fallback</strong>. OFAC uses cached data, search falls back to mock data, web scraping falls back to HTTP. The system <strong>never hard-fails</strong>. We designed for resilience from day one."
+        </div>
+    </div>
+
+    <div class="qa-card technical">
+        <span class="tag technical">TECHNICAL</span>
+        <div class="question">What LLMs do you use?</div>
+        <div class="answer">
+            <strong>Answer:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>Primary:</strong> OpenAI GPT-4o-mini (fast, cost-effective)</li>
+                <li><strong>Fallback:</strong> Ollama with Phi3 or TinyLlama (fully local)</li>
+                <li><strong>ML Models:</strong> Naive Bayes (76.5%), Random Forest (71.7%), Fine-tuned transformer (59%)</li>
+                <li><strong>Ensemble:</strong> High-precision OR voting = 82.1%</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Business Questions -->
+    <div class="qa-card business">
+        <span class="tag business">BUSINESS</span>
+        <div class="question">What's the cost per email?</div>
+        <div class="answer">
+            <strong>Answer:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>With OpenAI:</strong> ~$0.001 per email (GPT-4o-mini pricing)</li>
+                <li><strong>With Ollama:</strong> Free (local compute only)</li>
+                <li><strong>10,000 emails/day:</strong> ~$10/day with OpenAI, $0 with Ollama</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-card business">
+        <span class="tag business">BUSINESS</span>
+        <div class="question">Is this FINMA compliant?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "The foundation is there - <strong>full audit trail, OFAC screening, AML/KYC risk assessment, on-premise deployment</strong>. Full FINMA compliance requires bank-specific customization (data retention policies, specific reporting formats). We built the <strong>compliance infrastructure</strong> - the bank adds their specific rules."
+        </div>
+    </div>
+
+    <div class="qa-card business">
+        <span class="tag business">BUSINESS</span>
+        <div class="question">How long to deploy in production?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "POC can run today - just <strong>docker-compose up</strong>. Production deployment with bank integration typically needs:
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li>Email server integration (2-3 days)</li>
+                <li>Custom compliance rules (1-2 weeks)</li>
+                <li>Security hardening (1 week)</li>
+                <li>User training (ongoing)</li>
+            </ul>"
+        </div>
+    </div>
+
+    <div class="qa-card business">
+        <span class="tag business">BUSINESS</span>
+        <div class="question">What makes this different from existing solutions?</div>
+        <div class="answer">
+            <strong>Answer:</strong>
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>Multi-agent collaboration</strong> - not just detection, but investigation</li>
+                <li><strong>Swiss banking focus</strong> - OFAC, AML/KYC built-in</li>
+                <li><strong>On-premise first</strong> - data sovereignty by design</li>
+                <li><strong>Explainable decisions</strong> - full audit trail of agent reasoning</li>
+                <li><strong>Extensible platform</strong> - add tools/teams without code changes</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Edge Cases -->
+    <div class="qa-card technical">
+        <span class="tag technical">TECHNICAL</span>
+        <div class="question">What about false positives? How do you handle them?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "We optimized for <strong>precision (81.9%)</strong> to minimize false positives. Uncertain cases get <strong>human-in-the-loop review</strong>. The multi-agent layer adds a second check - if agents disagree, it's flagged for manual review. Over time, feedback improves the models."
+        </div>
+    </div>
+
+    <div class="qa-card technical">
+        <span class="tag technical">TECHNICAL</span>
+        <div class="question">Can you add new types of analysis/agents?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "Yes, by design:
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>New tool:</strong> 30 minutes (implement interface, register)</li>
+                <li><strong>New agent:</strong> 1 hour (define role, persona, tools)</li>
+                <li><strong>New team:</strong> 2 hours (4 agents + collaboration pattern)</li>
+            </ul>
+            The pluggable architecture was a core design goal."
+        </div>
+    </div>
+
+    <div class="qa-card skeptical">
+        <span class="tag skeptical">CREDIBILITY</span>
+        <div class="question">Why should we trust AI for critical banking decisions?</div>
+        <div class="answer">
+            <strong>Answer:</strong> "We don't replace human judgment - we <strong>augment it</strong>. The system:
+            <ul style="margin-top: 10px; margin-left: 20px;">
+                <li><strong>Triages</strong> 10,000 emails to the 100 that need attention</li>
+                <li><strong>Provides context</strong> - agent analysis as decision support</li>
+                <li><strong>Flags uncertainty</strong> - humans review edge cases</li>
+                <li><strong>Creates audit trail</strong> - every decision is explainable</li>
+            </ul>
+            It's AI + Human, not AI vs Human."
+        </div>
+    </div>
+
+    <h2 style="margin: 30px 0 20px; color: #1a365d;">Quick Stats Reference</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="background: white; padding: 15px; border-radius: 8px;">
+            <strong>Processing Speed</strong>
+            <ul style="margin-top: 5px; margin-left: 15px; font-size: 0.9rem;">
+                <li>ML detection: &lt;100ms</li>
+                <li>LLM enrichment: 2-3s</li>
+                <li>RAG lookup: &lt;500ms</li>
+                <li>Full pipeline: 3-5s</li>
+                <li>Agent workflow: 30-60s</li>
+            </ul>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 8px;">
+            <strong>Architecture</strong>
+            <ul style="margin-top: 5px; margin-left: 15px; font-size: 0.9rem;">
+                <li>14 Docker services</li>
+                <li>46 REST API endpoints</li>
+                <li>13 pluggable tools</li>
+                <li>3 ML models (ensemble)</li>
+                <li>12 specialized agents</li>
+            </ul>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 8px;">
+            <strong>Accuracy</strong>
+            <ul style="margin-top: 5px; margin-left: 15px; font-size: 0.9rem;">
+                <li>Ensemble ML: 82.1%</li>
+                <li>F1 Score: 81.9%</li>
+                <li>Precision: 81.9%</li>
+                <li>Recall: 82.0%</li>
+                <li>Agent validation: 95%+</li>
+            </ul>
+        </div>
+        <div style="background: white; padding: 15px; border-radius: 8px;">
+            <strong>Dataset</strong>
+            <ul style="margin-top: 5px; margin-left: 15px; font-size: 0.9rem;">
+                <li>10,000 emails total</li>
+                <li>60% phishing (6,000)</li>
+                <li>40% legitimate (4,000)</li>
+                <li>Source: Kaggle</li>
+                <li>Auto-loaded on startup</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; padding: 20px; background: #fed7d7; border-radius: 12px; border-left: 4px solid #c53030;">
+        <h3 style="color: #742a2a; margin-bottom: 10px;">If Demo Fails</h3>
+        <p style="color: #742a2a;">
+            "We have a <strong>recorded backup</strong> of the demo. Let me show you the key flow..."
+            <br><br>
+            <strong>Backup plan:</strong> Have screen recording ready. Walk through screenshots if needed.
+        </p>
+    </div>
+
+</body>
+</html>

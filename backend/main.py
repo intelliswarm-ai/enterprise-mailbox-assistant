@@ -2254,6 +2254,144 @@ async def suggest_team_for_email_endpoint(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/api/emails/{email_id}/analyze-tasks")
+async def analyze_email_tasks(
+    email_id: int,
+    request: dict,
+    db: Session = Depends(get_db)
+):
+    """
+    Analyze an email and suggest multiple task options for the user to choose from.
+    Uses LLM to understand the email content and propose specific actions.
+
+    Request body:
+    {
+        "team": "fraud"  // The team context for task suggestions
+    }
+
+    Returns:
+    {
+        "email_id": 123,
+        "team": "fraud",
+        "task_options": [
+            {
+                "id": "task_1",
+                "title": "Verify transaction authenticity",
+                "description": "Check if the reported transaction is legitimate",
+                "priority": "high"
+            },
+            ...
+        ]
+    }
+    """
+    try:
+        team = request.get("team")
+
+        # Get email from database
+        email = db.query(Email).filter(Email.id == email_id).first()
+        if not email:
+            raise HTTPException(status_code=404, detail=f"Email {email_id} not found")
+
+        # Validate team
+        if team not in TEAMS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid team '{team}'. Valid teams: {list(TEAMS.keys())}"
+            )
+
+        team_info = TEAMS[team]
+
+        # Build LLM prompt to analyze the email and suggest task options
+        system_prompt = f"""You are an intelligent task analysis system for a Swiss bank's {team_info['name']} team.
+
+Your job is to analyze incoming emails and suggest 3-4 specific, actionable tasks that the team should perform.
+
+Team expertise:
+{chr(10).join([f"- {agent['role']}: {agent['responsibilities']}" for agent in team_info['agents']])}
+
+Guidelines:
+- Suggest 3-4 distinct tasks that align with the team's expertise
+- Each task should be specific to the email content
+- Tasks should be actionable and have clear outcomes
+- Prioritize tasks by urgency (high/medium/low)
+- Consider different perspectives (investigation, analysis, verification, recommendation)
+
+Respond with ONLY valid JSON in this format:
+{{
+    "task_options": [
+        {{
+            "id": "task_1",
+            "title": "Brief task title (5-8 words)",
+            "description": "Detailed description of what needs to be done (1-2 sentences)",
+            "priority": "high|medium|low"
+        }}
+    ]
+}}"""
+
+        user_prompt = f"""EMAIL TO ANALYZE:
+Subject: {email.subject}
+From: {email.sender}
+Body: {(email.body_text or email.body_html)[:1000]}
+
+Based on this email content and the {team_info['name']} team's expertise, suggest 3-4 specific tasks the team should perform. Return ONLY the JSON response."""
+
+        # Call LLM to generate task options
+        response = await orchestrator.call_llm(user_prompt, system_prompt)
+
+        # Parse JSON response
+        import re
+        import json
+        json_match = re.search(r'\{.*\}', response, re.DOTALL)
+        if json_match:
+            task_data = json.loads(json_match.group())
+            task_options = task_data.get("task_options", [])
+
+            # Ensure each task has a unique ID
+            for i, task in enumerate(task_options):
+                if "id" not in task:
+                    task["id"] = f"task_{i+1}"
+
+            logger.info(f"Generated {len(task_options)} task options for email {email_id}, team {team}")
+
+            return {
+                "email_id": email_id,
+                "team": team,
+                "team_name": team_info["name"],
+                "task_options": task_options
+            }
+        else:
+            # Fallback: create generic task options
+            fallback_tasks = [
+                {
+                    "id": "task_1",
+                    "title": f"Analyze email for {team} concerns",
+                    "description": f"Review the email content and identify key {team}-related issues",
+                    "priority": "medium"
+                },
+                {
+                    "id": "task_2",
+                    "title": "Investigate and provide recommendations",
+                    "description": "Conduct thorough investigation and provide actionable recommendations",
+                    "priority": "high"
+                }
+            ]
+
+            return {
+                "email_id": email_id,
+                "team": team,
+                "team_name": team_info["name"],
+                "task_options": fallback_tasks
+            }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error analyzing tasks for email {email_id}: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/api/emails/{email_id}/assign-team")
 async def assign_team_to_email(
     email_id: int,
@@ -2267,12 +2405,18 @@ async def assign_team_to_email(
     Request body:
     {
         "team": "investments",
-        "assignment_message": "Please check this email and tell me what you suggest I should do?"
+        "assignment_message": "Please check this email and tell me what you suggest I should do?",
+        "selected_task": {
+            "id": "task_1",
+            "title": "Verify transaction authenticity",
+            "description": "Check if the reported transaction is legitimate"
+        }
     }
     """
     try:
         team = request.get("team")
         assignment_message = request.get("assignment_message", "")
+        selected_task = request.get("selected_task", None)  # Get the user-selected task
 
         # Get email from database
         email = db.query(Email).filter(Email.id == email_id).first()
@@ -2301,14 +2445,29 @@ async def assign_team_to_email(
             "email_id": email_id,
             "team": team,
             "assignment_message": assignment_message,
+            "selected_task": selected_task,  # Store the selected task
             "created_at": datetime.now().isoformat(),
             "messages": []
         }
 
-        # Prepend assignment message to email body if provided
+        # Prepare email body with assignment message and selected task context
         email_body = email.body_text or email.body_html
+
+        # Build context for the workflow
+        task_context = ""
+        if selected_task:
+            task_context = f"""SELECTED TASK:
+Task: {selected_task.get('title', 'N/A')}
+Description: {selected_task.get('description', 'N/A')}
+Priority: {selected_task.get('priority', 'medium')}
+
+The team should focus specifically on this task when analyzing the email.
+"""
+
         if assignment_message:
-            email_body = f"ASSIGNMENT MESSAGE: {assignment_message}\n\n{email_body}"
+            email_body = f"ASSIGNMENT MESSAGE: {assignment_message}\n\n{task_context}\n{email_body}"
+        elif task_context:
+            email_body = f"{task_context}\n{email_body}"
 
         # Start background task for agentic workflow
         asyncio.create_task(run_agentic_workflow_background(
@@ -2320,7 +2479,12 @@ async def assign_team_to_email(
             email_sender=email.sender
         ))
 
-        logger.info(f"Assigned team '{team}' to email {email_id} with message and started workflow task {task_id}")
+        log_msg = f"Assigned team '{team}' to email {email_id}"
+        if selected_task:
+            log_msg += f" with task '{selected_task.get('title')}'"
+        if assignment_message:
+            log_msg += " with custom message"
+        logger.info(log_msg)
 
         return {
             "status": "assigned",

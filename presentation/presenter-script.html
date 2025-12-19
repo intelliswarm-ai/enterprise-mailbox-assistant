@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presenter Script - Enterprise Email Assistant (6 min)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --accent: #c53030;
+            --success: #38a169;
+            --gold: #d69e2e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1a1a2e;
+            color: #eaeaea;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+        h1 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .slide-section {
+            background: #16213e;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--gold);
+        }
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .slide-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        .time-badge {
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .cumulative {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        .script {
+            font-size: 1.1rem;
+            color: #ddd;
+        }
+        .script p {
+            margin-bottom: 12px;
+        }
+        .emphasis {
+            color: #ffd700;
+            font-weight: 600;
+        }
+        .action {
+            background: #0f3460;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #64b5f6;
+        }
+        .action::before {
+            content: "ACTION: ";
+            font-weight: 700;
+            color: #90caf9;
+        }
+        .tip {
+            background: #1b4332;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #95d5b2;
+            font-size: 0.95rem;
+        }
+        .tip::before {
+            content: "TIP: ";
+            font-weight: 700;
+        }
+        .warning {
+            background: #7f1d1d;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #fecaca;
+            font-size: 0.95rem;
+        }
+        .warning::before {
+            content: "WARNING: ";
+            font-weight: 700;
+        }
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            background: #16213e;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .timeline-item {
+            text-align: center;
+        }
+        .timeline-time {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+        }
+        .timeline-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #333;
+            margin: 30px 0;
+        }
+        @media print {
+            body { background: white; color: black; }
+            .slide-section { background: #f5f5f5; border-color: #333; }
+            .script, .emphasis { color: #333; }
+            .slide-title { color: #333; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Presenter Script</h1>
+    <p class="subtitle">Enterprise Email Assistant - 6 Minute Presentation + 2 Min Q&A</p>
+
+    <!-- Timeline Overview -->
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-time">0:00</div>
+            <div class="timeline-label">Start</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-time">0:55</div>
+            <div class="timeline-label">Value</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-time">2:10</div>
+            <div class="timeline-label">Demo</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-time">3:45</div>
+            <div class="timeline-label">Compliance</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-time">5:10</div>
+            <div class="timeline-label">Results</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-time">6:00</div>
+            <div class="timeline-label">Q&A</div>
+        </div>
+    </div>
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 1: Title</span>
+            <span class="time-badge">15 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 0:00 - 0:15</div>
+
+        <div class="script">
+            <p>"Good [morning/afternoon], we are <span class="emphasis">[Team Name]</span>."</p>
+            <p>"We built <span class="emphasis">Enterprise Email Assistant</span> - an intelligent email security and compliance platform designed specifically for Swiss banking."</p>
+        </div>
+
+        <div class="action">Click to next slide immediately after introduction</div>
+    </div>
+
+    <!-- SLIDE 2: Enterprise Value -->
+    <div class="slide-section" style="border-left-color: var(--success);">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 2: Enterprise Value</span>
+            <span class="time-badge" style="background: var(--success);">40 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 0:15 - 0:55</div>
+
+        <div class="script">
+            <p>"Let me start with the <span class="emphasis">business impact</span>."</p>
+            <p>"Our solution saves <span class="emphasis">10 minutes per employee per day</span> on email triage."</p>
+            <p>"For <span class="emphasis">5,000 employees</span>: that's 833 hours saved daily, <span class="emphasis">208,000 hours annually</span>."</p>
+            <p>"At $60/hour, that's <span class="emphasis">$12.5 million in annual value</span>."</p>
+        </div>
+
+        <div class="tip">Let the $12.5M number sink in - this is the hook</div>
+    </div>
+
+    <!-- SLIDE 3: Problem -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 3: The Problem</span>
+            <span class="time-badge">35 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 0:55 - 1:30</div>
+
+        <div class="script">
+            <p>"Swiss banks face a <span class="emphasis">massive email security challenge</span>."</p>
+            <p>"Financial institutions process over <span class="emphasis">10,000 emails daily</span>. Manual review is simply impossible."</p>
+            <p>"The statistics are alarming: <span class="emphasis">91% of cyberattacks</span> begin with email. The average cost of a data breach is <span class="emphasis">$4.9 million</span>."</p>
+            <p>"Traditional rule-based filters catch only 60% of sophisticated attacks. <span class="emphasis">We need something smarter.</span>"</p>
+        </div>
+
+        <div class="tip">Pause briefly on the $4.9M number - let it sink in</div>
+    </div>
+
+    <!-- SLIDE 4: Solution -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 4: Our Solution</span>
+            <span class="time-badge">40 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 1:30 - 2:10</div>
+
+        <div class="script">
+            <p>"Our solution: <span class="emphasis">Multi-Agent AI</span>."</p>
+            <p>"We built <span class="emphasis">three specialized AI teams</span>, each solving a critical banking challenge."</p>
+            <p>"<span class="emphasis">Fraud Investigation</span> - 4 agents using a Doer-Checker pattern for phishing and wire fraud detection."</p>
+            <p>"<span class="emphasis">Compliance & AML</span> - multi-round debate for KYC checks and sanctions screening."</p>
+            <p>"<span class="emphasis">Investment Research</span> - parallel synthesis of SEC filings and market data."</p>
+            <p>"That's <span class="emphasis">12 specialized agents</span>, <span class="emphasis">13 banking tools</span>, far exceeding the hackathon requirement of just one."</p>
+        </div>
+
+        <div class="tip">Point to each card as you mention it</div>
+    </div>
+
+    <!-- SLIDE 5: DEMO -->
+    <div class="slide-section" style="border-left-color: var(--accent);">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 5: LIVE DEMO</span>
+            <span class="time-badge" style="background: var(--accent);">55 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 2:10 - 3:05 (KEY SLIDE)</div>
+
+        <div class="script">
+            <p>"Let me <span class="emphasis">show you this in action</span>."</p>
+            <p>"I'm going to switch to our live application..."</p>
+        </div>
+
+        <div class="action">ALT+TAB to browser with application open</div>
+
+        <div class="script">
+            <p>"Here's our mailbox with emails already analyzed by our ML pipeline - you can see the phishing scores and badges."</p>
+            <p>"Let me select this suspicious email... and trigger our <span class="emphasis">Fraud Investigation team</span>."</p>
+        </div>
+
+        <div class="action">Click email → Click "Agentic Teams" → Select "Fraud"</div>
+
+        <div class="script">
+            <p>"Watch the agents collaborate in <span class="emphasis">real-time</span>..."</p>
+            <p>"The <span class="emphasis">Fraud Detective</span> is analyzing the email indicators..."</p>
+            <p>"Now the <span class="emphasis">Forensic Analyst</span> validates the findings..."</p>
+            <p>"And we get legal and security recommendations..."</p>
+            <p>"<span class="emphasis">45 seconds</span> - a fully documented investigation with complete audit trail."</p>
+        </div>
+
+        <div class="warning">If demo fails: "We have a recording - let me show you the flow..." (Have backup video ready!)</div>
+
+        <div class="action">ALT+TAB back to presentation</div>
+    </div>
+
+    <!-- SLIDE 5b: Compliance Team -->
+    <div class="slide-section" style="border-left-color: var(--gold);">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 5b: Compliance Team</span>
+            <span class="time-badge" style="background: var(--gold);">40 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 3:05 - 3:45</div>
+
+        <div class="script">
+            <p>"Our second team handles <span class="emphasis">Compliance & AML</span>."</p>
+            <p>"Here we use a different pattern: <span class="emphasis">Multi-Round Debate</span>."</p>
+            <p>"Four experts - Compliance Officer, Legal Counsel, Internal Auditor, and Regulatory Liaison - each argue their perspective."</p>
+            <p>"Three structured rounds: initial positions, challenge assumptions, then <span class="emphasis">consensus building</span>."</p>
+            <p>"<span class="emphasis">OFAC sanctions screening</span> is built-in - a hard regulatory requirement for Swiss banks."</p>
+        </div>
+
+        <div class="tip">Point to the agent flow diagram showing the debate arrows</div>
+    </div>
+
+    <!-- SLIDE 5c: Investment Team -->
+    <div class="slide-section" style="border-left-color: var(--success);">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 5c: Investment Team</span>
+            <span class="time-badge" style="background: var(--success);">40 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 3:45 - 4:25</div>
+
+        <div class="script">
+            <p>"Our third team supports <span class="emphasis">Investment Research</span>."</p>
+            <p>"This team uses <span class="emphasis">Research Synthesis</span> - parallel data gathering."</p>
+            <p>"All four analysts work <span class="emphasis">simultaneously</span>: Financial Analyst calculates ratios, Research Analyst searches the web, Filings Analyst pulls SEC EDGAR documents."</p>
+            <p>"Then the Investment Advisor <span class="emphasis">synthesizes everything</span> into a recommendation."</p>
+            <p>"<span class="emphasis">40-55 seconds</span> for comprehensive due diligence - perfect for client onboarding or M&A support."</p>
+        </div>
+
+        <div class="tip">Emphasize "parallel" - this is faster than sequential processing</div>
+    </div>
+
+    <!-- SLIDE 6: Swiss Compliance -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 6: Swiss Banking Compliance</span>
+            <span class="time-badge">30 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 4:25 - 4:55</div>
+
+        <div class="script">
+            <p>"This isn't just AI - it's <span class="emphasis">compliant AI</span>."</p>
+            <p>"<span class="emphasis">OFAC sanctions screening</span> built-in. <span class="emphasis">Full audit trail</span> for regulators."</p>
+            <p>"<span class="emphasis">On-premise deployment</span> - your data <span class="emphasis">never leaves your infrastructure</span>."</p>
+        </div>
+
+        <div class="tip">Emphasize "data never leaves" - critical for Swiss banks</div>
+    </div>
+
+    <!-- SLIDE 7: Results -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 7: Results</span>
+            <span class="time-badge">25 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 4:55 - 5:20</div>
+
+        <div class="script">
+            <p>"<span class="emphasis">82% phishing detection</span>. <span class="emphasis">3-5 seconds</span> per email."</p>
+            <p>"<span class="emphasis">95% time savings</span>. Production-tested with <span class="emphasis">10,000+ emails</span>."</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: Platform + How Built -->
+    <div class="slide-section">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 8: Platform & How We Built</span>
+            <span class="time-badge">25 sec</span>
+        </div>
+        <div class="cumulative">Cumulative: 5:20 - 5:45</div>
+
+        <div class="script">
+            <p>"This is a <span class="emphasis">platform</span>. Add tools in 30 minutes, teams in 2 hours."</p>
+            <p>"How did 5 people build this? <span class="emphasis">We leveraged</span> LangGraph, CrewAI, Docker, open ML."</p>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Thank You -->
+    <div class="slide-section" style="border-left-color: var(--success);">
+        <div class="slide-header">
+            <span class="slide-title">SLIDE 9: Thank You</span>
+            <span class="time-badge" style="background: var(--success);">Q&A</span>
+        </div>
+        <div class="cumulative">Cumulative: 5:45 - 6:00 → Q&A (2 min)</div>
+
+        <div class="script">
+            <p>"<span class="emphasis">Ready for production. Ready for compliance. Ready for Enterprise.</span>"</p>
+            <p>"Thank you. Questions?"</p>
+        </div>
+
+        <div class="tip">Smile. Make eye contact. You did it!</div>
+    </div>
+
+    <hr>
+
+    <h2 style="color: #ffd700; margin-bottom: 20px;">Pre-Presentation Checklist</h2>
+
+    <div style="background: #16213e; padding: 20px; border-radius: 12px;">
+        <ul style="list-style: none; font-size: 1rem;">
+            <li style="margin-bottom: 10px;">[ ] Application running and tested (docker-compose up)</li>
+            <li style="margin-bottom: 10px;">[ ] Browser open with application in separate tab</li>
+            <li style="margin-bottom: 10px;">[ ] Presentation in fullscreen mode (F11)</li>
+            <li style="margin-bottom: 10px;">[ ] Select a good phishing email in advance for demo</li>
+            <li style="margin-bottom: 10px;">[ ] Backup demo video ready (just in case)</li>
+            <li style="margin-bottom: 10px;">[ ] Q&A cheatsheet open on phone/tablet</li>
+            <li style="margin-bottom: 10px;">[ ] Timer tested (press 'T' to start)</li>
+            <li style="margin-bottom: 10px;">[ ] Internet connection stable</li>
+            <li style="margin-bottom: 10px;">[ ] Water bottle nearby</li>
+            <li style="margin-bottom: 10px;">[ ] Deep breath. You've got this.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

@@ -102,6 +102,14 @@ export interface TeamAssignment {
   emailId: number;
   team: string;
   message?: string;
+  selectedTask?: TaskOption;
+}
+
+export interface TaskOption {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'high' | 'medium' | 'low';
 }
 
 export interface EnrichedData {

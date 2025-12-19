@@ -10,6 +10,7 @@ import { selectAllEmails } from '../../store';
 import * as EmailsActions from '../../store/emails/emails.actions';
 import { EmailService } from '../../core/services/email.service';
 import { SseService } from '../../core/services/sse.service';
+import { ApiService } from '../../core/services/api.service';
 import { marked } from 'marked';
 
 interface TeamMember {
@@ -72,6 +73,7 @@ export class AgenticTeamsComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private store = inject(Store);
   private emailService = inject(EmailService);
+  private apiService = inject(ApiService);
   private sseService = inject(SseService);
   private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
@@ -597,34 +599,91 @@ export class AgenticTeamsComponent implements OnInit, OnDestroy {
   sendChatMessage(): void {
     if (!this.chatMessage.trim() || !this.selectedEmail) return;
 
+    // Check if email has an agentic task
+    if (!this.selectedEmail.agentic_task_id) {
+      console.error('[Chat] No agentic task found for this email');
+      return;
+    }
+
+    const message = this.chatMessage.trim();
+    const taskId = this.selectedEmail.agentic_task_id;
+    const emailId = this.selectedEmail.id;
+
     // Add user message to discussion
     const userMessage: DiscussionMessage = {
       agentName: 'You',
       agentIcon: '👤',
-      content: this.chatMessage,
+      content: message,
       timestamp: 'Just now'
     };
 
-    if (!this.discussionMessages[this.selectedEmail.id]) {
-      this.discussionMessages[this.selectedEmail.id] = [];
+    if (!this.discussionMessages[emailId]) {
+      this.discussionMessages[emailId] = [];
     }
 
-    this.discussionMessages[this.selectedEmail.id].push(userMessage);
+    this.discussionMessages[emailId].push(userMessage);
 
-    // Mock AI response
-    setTimeout(() => {
-      if (this.selectedEmail) {
-        const aiResponse: DiscussionMessage = {
-          agentName: 'AI Coordinator',
-          agentIcon: '🤖',
-          content: 'Thank you for your question. The team is analyzing this...',
-          timestamp: 'Just now'
-        };
-        this.discussionMessages[this.selectedEmail.id].push(aiResponse);
-      }
-    }, 1000);
-
+    // Clear input immediately
     this.chatMessage = '';
+
+    // Show loading message
+    const loadingMessage: DiscussionMessage = {
+      agentName: 'AI Coordinator',
+      agentIcon: '🤖',
+      content: 'Thank you for your question. The team is analyzing this...',
+      timestamp: 'Just now'
+    };
+    this.discussionMessages[emailId].push(loadingMessage);
+
+    // Send to backend
+    this.apiService.sendChatMessage(taskId, message)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          console.log('[Chat] Response received:', response);
+
+          // Remove loading message
+          const messages = this.discussionMessages[emailId];
+          const loadingIndex = messages.indexOf(loadingMessage);
+          if (loadingIndex > -1) {
+            messages.splice(loadingIndex, 1);
+          }
+
+          // Add actual response
+          if (response.response) {
+            const aiResponse: DiscussionMessage = {
+              agentName: response.agent || 'AI Coordinator',
+              agentIcon: response.icon || this.getAgentIcon(response.agent || 'AI Coordinator'),
+              content: response.response,
+              timestamp: 'Just now'
+            };
+            this.discussionMessages[emailId].push(aiResponse);
+          }
+
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('[Chat] Error sending message:', error);
+
+          // Remove loading message
+          const messages = this.discussionMessages[emailId];
+          const loadingIndex = messages.indexOf(loadingMessage);
+          if (loadingIndex > -1) {
+            messages.splice(loadingIndex, 1);
+          }
+
+          // Show error message
+          const errorMessage: DiscussionMessage = {
+            agentName: 'System',
+            agentIcon: '⚠️',
+            content: 'Failed to send message. Please try again.',
+            timestamp: 'Just now'
+          };
+          this.discussionMessages[emailId].push(errorMessage);
+
+          this.cdr.detectChanges();
+        }
+      });
   }
 
   handleChatKeypress(event: KeyboardEvent): void {
