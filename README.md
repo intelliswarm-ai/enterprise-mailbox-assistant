@@ -1,4 +1,4 @@
-# AI Cup 2025 - Enterprise Email Analysis System
+# Enterprise Email Analysis System
 
 A sophisticated, production-ready email analysis platform combining machine learning, agentic AI, RAG (Retrieval-Augmented Generation), and multi-agent collaboration for intelligent phishing detection and email processing.
 
