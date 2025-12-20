@@ -12,9 +12,9 @@ A sophisticated, production-ready email analysis platform combining machine lear
 
 ## 🎥 Demo Video
 
-[![Watch the video](https://img.youtube.com/vi/8xxYOO3r-44/maxresdefault.jpg)]
-(https://youtu.be/8xxYOO3r-44)
+## 🎥 Demo Video
 
+🎥 Demo Video: https://youtu.be/8xxYOO3r-44
 
 ## Current Status - Fully Implemented Features
 
