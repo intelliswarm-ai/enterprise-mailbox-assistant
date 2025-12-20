@@ -9,6 +9,13 @@ A sophisticated, production-ready email analysis platform combining machine lear
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)](https://www.postgresql.org/)
 [![Ollama](https://img.shields.io/badge/Ollama-Local%20LLM-000000)](https://ollama.ai/)
 
+
+## 🎥 Demo Video
+
+[![Watch the video](https://img.youtube.com/vi/8xxYOO3r-44/maxresdefault.jpg)]
+(https://youtu.be/8xxYOO3r-44)
+
+
 ## Current Status - Fully Implemented Features
 
 ### 🚀 Key Automation Features
